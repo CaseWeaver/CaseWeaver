@@ -1,0 +1,59 @@
+source,target,link,source_type,target_type,source_cluster,target_cluster,amount,date
+Jane Doe,Acme Holdings LLC,controls,person,company,Operators,Shells,,
+John Smith,PayVehicle Inc.,director,person,company,Operators,Shells,,
+Acme Holdings LLC,PayVehicle Inc.,owns,company,company,Shells,Shells,,
+Acme Holdings LLC,Acme (Shenzhen) Co.,US-CN pair,company,company,Shells,Shells,,
+R. Agent,Acme Holdings LLC,registered agent,person,company,Operators,Shells,,
+Offshore Fund Ltd,Grand Cayman,registered in,financial,location,Shells,Shells,,
+PayVehicle Inc.,Offshore Fund Ltd,layering transfer,company,financial,Shells,Shells,262000,2026-05-02
+Offshore Fund Ltd,Partner Trading Co.,fake invoices,financial,company,Shells,Integration,190000,2026-06-08
+Acme (Shenzhen) Co.,Partner Trading Co.,trades with,company,company,Shells,Integration,88000,2026-06-15
+Jane Doe,ShadowSyndicate,coordinates,person,group,Operators,Cyber,,
+ShadowSyndicate,FastPay Portal,operates,group,infrastructure,Cyber,Cyber,,
+ShadowSyndicate,C2 Server .44,operates,group,infrastructure,Cyber,Cyber,,
+C2 Server .44,Stealer.X,hosts,infrastructure,malware,Cyber,Cyber,,
+Stealer.X,Harold Finch,infected device,malware,person,Cyber,Victims,,2026-02-03
+ShadowSyndicate,darkbay_seller77,runs,group,account,Cyber,Cyber,,
+ShadowSyndicate,Marcus Webb,recruited (WFH ad),group,person,Cyber,Mules,,2026-01-18
+ShadowSyndicate,Tina Alvarez,recruited (WFH ad),group,person,Cyber,Mules,,2026-01-25
+Marcus Webb,Mule Account 4471,holds,person,financial,Mules,Mules,,
+Tina Alvarez,Mule Account 8802,holds,person,financial,Mules,Mules,,
+Harold Finch,Mule Account 4471,wire (investment scam),person,financial,Victims,Mules,45000,2026-02-14
+Dorothy Klein,Mule Account 4471,wire (romance scam),person,financial,Victims,Mules,18500,2026-02-27
+Sam Otieno,Mule Account 8802,wire (investment scam),person,financial,Victims,Mules,26000,2026-03-05
+Priya Nair,Mule Account 8802,wire (investment scam),person,financial,Victims,Mules,31000,2026-03-19
+Viktor Egorov,Mule Account 4471,crypto purchase,person,financial,Victims,Mules,12400,2026-04-01
+Mule Account 4471,PayVehicle Inc.,forwarded less 10% fee,financial,company,Mules,Shells,68300,2026-04-10
+Mule Account 8802,PayVehicle Inc.,forwarded less 10% fee,financial,company,Mules,Shells,51300,2026-04-12
+Harold Finch,Chargeback CB-2201,filed,person,event,Victims,Victims,,2026-04-22
+Chargeback CB-2201,SAR-2026-0114.pdf,triggered,event,document,Victims,Victims,,2026-05-01
+Mule Account 4471,SAR-2026-0114.pdf,named in,financial,document,Mules,Victims,,
+Jane Doe,jane@acme.example,,person,email,,,,
+Jane Doe,"1 Main St, Anytown",,person,address,,,,
+Acme Holdings LLC,"1 Main St, Anytown",,company,address,,,,
+R. Agent,"1 Main St, Anytown",,person,address,,,,
+Jane Doe,+1 555 0142,,person,phone,,,,
+John Smith,+1 555 0142,,person,phone,,,,
+PayVehicle Inc.,admin@money.example,,company,email,,,,
+Offshore Fund Ltd,admin@money.example,,financial,email,,,,
+Acme Holdings LLC,acme-holdings.example,,company,domain,,,,
+Acme Holdings LLC,Reg #A-1001,,company,id,,,,
+FastPay Portal,fastpay-portal.example,,infrastructure,domain,,,,
+FastPay Portal,192.0.2.44,,infrastructure,ip,,,,
+C2 Server .44,192.0.2.44,,infrastructure,ip,,,,
+C2 Server .44,AA:BB:CC:DD:EE:FF,,infrastructure,mac,,,,
+Stealer.X,9f2b1c0ffee1234567890abcdef12345,,malware,hash,,,,
+Stealer.X,https://fastpay-portal.example/gate.php,,malware,url,,,,
+ShadowSyndicate,@shadow_ops,,group,user,,,,
+darkbay_seller77,@shadow_ops,,account,user,,,,
+darkbay_seller77,bc1qexamplewallet000,,account,wallet,,,,
+Jane Doe,bc1qexamplewallet000,,person,wallet,,,,
+Mule Account 4471,FP-9C21E-DEVICE,,financial,device,,,,
+Mule Account 8802,FP-9C21E-DEVICE,,financial,device,,,,
+Mule Account 4471,+1 555 0199,,financial,phone,,,,
+Mule Account 8802,+1 555 0199,,financial,phone,,,,
+Harold Finch,https://fastpay-portal.example/invest,,person,url,,,,
+Dorothy Klein,https://fastpay-portal.example/invest,,person,url,,,,
+Sam Otieno,https://fastpay-portal.example/invest,,person,url,,,,
+Priya Nair,https://fastpay-portal.example/invest,,person,url,,,,
+Viktor Egorov,https://fastpay-portal.example/invest,,person,url,,,,
