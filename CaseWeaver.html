@@ -542,11 +542,25 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
   .dossier-open:hover{filter:brightness(1.07);color:var(--accentText)}
   .edit-open{width:100%;margin:4px 0;background:transparent;border:1px solid var(--accent);color:var(--accent);font-weight:600;padding:7px}
   .edit-open:hover{background:var(--dropHover)}
-  #overlay,#editOverlay,#settingsOverlay,#reportOverlay{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 75%,transparent);backdrop-filter:blur(3px);
+  #overlay,#editOverlay,#settingsOverlay,#reportOverlay,#csvOverlay{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 75%,transparent);backdrop-filter:blur(3px);
     display:none;align-items:center;justify-content:center;z-index:50;padding:24px}
-  #overlay.on,#editOverlay.on,#settingsOverlay.on,#reportOverlay.on{display:flex}
+  #overlay.on,#editOverlay.on,#settingsOverlay.on,#reportOverlay.on,#csvOverlay.on{display:flex}
   #modal,#editModal,#settingsModal,#reportModal{background:var(--panel);border:1px solid var(--line);border-radius:16px;width:min(760px,100%);
     max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 60px var(--shadow)}
+  #csvModal{background:var(--panel);border:1px solid var(--line);border-radius:16px;width:min(1120px,100%);
+    max-height:92vh;display:flex;flex-direction:column;box-shadow:0 24px 60px var(--shadow)}
+  #csvTableWrap{overflow:auto;border:1px solid var(--line);border-radius:10px;max-height:56vh}
+  #csvTableWrap table{border-collapse:collapse;width:100%;font-size:12.5px}
+  #csvTableWrap th{position:sticky;top:0;background:var(--panel2);color:var(--muted);text-transform:uppercase;font-size:10px;
+    letter-spacing:.08em;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;z-index:1}
+  #csvTableWrap td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+  #csvTableWrap tr:hover td{background:var(--hover)}
+  #csvTableWrap td.num{text-align:right;font-family:var(--mono)}
+  #csvTableWrap td.mono{font-family:var(--mono);font-size:11.5px}
+  #csvTableWrap tr.csv-selrow td{color:var(--muted)}
+  .csv-kind{display:inline-block;font-size:9px;font-family:var(--mono);letter-spacing:.06em;padding:1px 6px;border-radius:4px;
+    border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+  .csv-kind.rel{color:var(--accent);border-color:var(--accent)}
   #modal .mhead,.ehead{padding:18px 22px;border-bottom:1px solid var(--line);position:relative}
   #modal .mhead h2,.ehead h2{margin:0 0 4px;font-size:22px;letter-spacing:.01em}
   #modal .mhead .role{color:var(--accent);font-size:13px}
@@ -716,6 +730,34 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
   .import-err{color:var(--warn);font-size:12.5px;margin-top:12px;min-height:16px}
   .secure-note{display:flex;align-items:flex-start;gap:8px;text-align:left;color:var(--muted);font-size:11.5px;
     line-height:1.55;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  /* ---------- v1.001 additions ---------- */
+  /* the detail pane always wins over the graph-settings bar */
+  #detail{z-index:14}
+  /* cramped screens: the graph-settings bar shrinks to a slim handle; hover/tap expands it */
+  body.cramped #canvasBar{left:12px;transform:none;max-width:46px;max-height:38px;overflow:hidden;opacity:.92}
+  body.cramped #canvasBar::before{content:"⚙";font-size:16px;line-height:26px;padding:0 8px;color:var(--text3)}
+  body.cramped #canvasBar:hover,body.cramped #canvasBar:focus-within{max-width:calc(100vw - 400px);max-height:none;overflow:visible;opacity:1}
+  body.cramped #canvasBar:hover::before,body.cramped #canvasBar:focus-within::before{content:""}
+  /* buckets */
+  .bkitem{font-size:12.5px;padding:6px 9px;border-radius:8px;background:var(--panel2);margin-bottom:5px;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .bkitem:hover{background:var(--hover)}
+  .bkitem b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+  .bkitem .bktoggle{font-size:10.5px;padding:2px 7px;border-radius:6px}
+  .bkrow{position:relative;padding-right:26px}
+  .bkx{position:absolute;right:8px;top:6px;color:var(--muted);cursor:pointer;font-size:13px}
+  .bkx:hover{color:var(--warn)}
+  /* compact shared-selector member lists */
+  .more-toggle{color:var(--accent);cursor:pointer;font-size:11px;white-space:nowrap}
+  .more-toggle:hover{text-decoration:underline}
+  /* grouped relationship list in the detail pane */
+  #detail .conngrp{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:8px 0 4px;font-weight:600;display:flex;align-items:center;gap:6px}
+  #detail .conngrp .cnt{background:var(--panel2);border-radius:8px;padding:0 7px;font-family:var(--mono)}
+  #detail .conn .rel{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+  /* auto-save toggle */
+  #autoSaveBtn .as-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:5px;vertical-align:1px}
+  #autoSaveBtn.on .as-dot{background:var(--ok)}
+  /* undo */
+  #undoBtn:disabled{opacity:.4;cursor:default}
 </style>
 </head>
 <body>
@@ -728,9 +770,11 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
     <div class="hbtns">
       <select id="themeSel" class="hbtn" title="Colour theme"></select>
       <button class="hbtn" id="addEntityBtn" title="Add a new entity by hand">+ Entity</button>
-      <button class="hbtn" id="importBtn" title="Import / replace from a CSV edge list">Import CSV</button>
+      <button class="hbtn" id="importBtn" title="Import from a CSV edge list — or from a dashboard saved with any older CaseWeaver version (.html)">Import</button>
       <button class="hbtn" id="settingsBtn" title="Case title, clusters">Settings</button>
+      <button class="hbtn" id="csvViewBtn" title="Tabular view of the case — filter, copy, download as CSV">CSV view</button>
       <button class="hbtn" id="reportBtn" title="Export a PDF report">Report</button>
+      <button class="hbtn" id="autoSaveBtn" title="Auto-save on a timer (set the interval in Settings). Off by default."><span class="as-dot"></span>Auto-save: off</button>
       <button class="hbtn primary" id="saveBtn" title="Save all data back into this file">Save case</button>
     </div>
   </header>
@@ -745,12 +789,17 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
         <h2>Storyboard <span class="cnt" id="bmCnt"></span></h2>
         <div class="btns"><button id="bmAdd">+ Bookmark view</button><button id="presentBtn">Present</button></div>
         <div id="bmList"></div>
-        <div class="hint">Bookmarks save the camera position with a caption. Present mode steps through them full-screen (arrow keys).</div>
+        <div class="hint">Bookmarks capture the full scene — node positions &amp; layout, all active filters (clusters, tags, selectors, flow, connections), highlights (trace / lens), and the camera — with a caption. Present mode steps through them full-screen (arrow keys), and each scene is rendered into the PDF report.</div>
       </div>
       <div class="box">
         <h2>Tags (click to filter) <span class="cnt" id="tagCnt"></span></h2>
         <div class="sfilter" id="tagChips"></div>
         <div class="hint" id="tagHint">Add tags to entities in their editor — e.g. mule, victim, SAR-filed, subject.</div>
+      </div>
+      <div class="box" id="bucketBox" style="display:none">
+        <h2>Buckets <span class="cnt" id="bucketCnt"></span></h2>
+        <div id="bucketList"></div>
+        <div class="hint">Box-select nodes → “Bucket…” to collapse them into one container. Click a bucket to explore, expand, or copy its labels.</div>
       </div>
       <div class="box folded">
         <h2>Money flow</h2>
@@ -760,6 +809,13 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
         <div class="rowc"><label class="hint" style="min-width:72px">To</label><input id="flowTo" type="date" style="flex:1"/></div>
         <div class="rowc"><button id="flowApply">Apply</button><button id="flowClear">Clear</button></div>
         <div class="hint">Hides relationships below the amount or outside the dates. Click an entity → "Trace funds" to follow chains.</div>
+      </div>
+      <div class="box folded">
+        <h2>Connections</h2>
+        <div class="rowc"><label class="hint" style="min-width:72px">Min links</label>
+          <input id="connMin" type="number" min="0" step="1" placeholder="e.g. 2" style="flex:1;padding:6px 8px"/>
+          <button id="connClear">Clear</button></div>
+        <div class="hint">Show only entities with at least this many relationships in the case (2 hides everything with a single link, 3 keeps hubs, and so on). Applies as you type.</div>
       </div>
       <div class="box">
         <h2>Shared selectors <span class="cnt" id="sharedCnt"></span></h2>
@@ -788,6 +844,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
       </select>
       <select id="rootSel" title="Radial / org root"></select>
       <span class="cdiv"></span>
+      <button id="undoBtn" title="Nothing to undo" disabled>↩ Undo</button>
       <button id="fit" title="Fit the whole graph in view">Fit</button>
       <button id="reset" title="Reset filters &amp; view">Reset</button>
       <button id="physics">Pause physics</button>
@@ -815,8 +872,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
         <p>Drop in a CSV edge list and this file draws the network. Click any node to edit its dossier by hand, then hit <b>Save case</b> to write everything back into this file.</p>
         <div id="dropzone">
           <div class="big">⇧</div>
-          <div class="t">Drop a CSV here, or click to choose a file</div>
-          <div class="s">source, target, link, source_type, target_type</div>
+          <div class="t">Drop a CSV — or a saved CaseWeaver dashboard (.html) from any version</div>
+          <div class="s">CSV: source, target, link, source_type, target_type · HTML: imports the embedded case</div>
         </div>
         <div class="import-actions">
           <button class="hbtn primary" id="loadSampleBtn">Load sample case</button>
@@ -921,6 +978,31 @@ Jane Doe,"1 Main St, Anytown",,person,address</code>
   </div>
 </div>
 
+<!-- CSV VIEW MODAL -->
+<div id="csvOverlay">
+  <div id="csvModal">
+    <div class="ehead">
+      <span class="eclose" id="csvClose">×</span>
+      <h2>CSV view</h2>
+      <div class="hint">Every relationship and contact selector as flat rows — the same edge-list format Import CSV accepts, so a download round-trips cleanly.</div>
+    </div>
+    <div class="ebody">
+      <div class="rowc" style="margin:10px 0 12px;gap:8px;display:flex;align-items:center;flex-wrap:wrap">
+        <input id="csvFilter" type="text" placeholder="Filter rows — entity, link, cluster, value…" autocomplete="off"
+          style="flex:1;min-width:220px;padding:7px 10px"/>
+        <span class="hint" id="csvCount"></span>
+      </div>
+      <div id="csvTableWrap"></div>
+    </div>
+    <div class="eact">
+      <button class="hbtn primary" id="csvDownload">Download CSV</button>
+      <button id="csvCopy">Copy CSV</button>
+      <span class="grow"></span>
+      <button id="csvCancel">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- ABOUT MODAL -->
 <div id="aboutOverlay">
   <div id="aboutModal">
@@ -936,7 +1018,12 @@ Jane Doe,"1 Main St, Anytown",,person,address</code>
 <div id="selBar">
   <span id="selCount"></span>
   <select id="selCluster"></select>
+  <select id="selAddCluster" title="Add the selection to a cluster — keeps every existing cluster membership"></select>
+  <select id="selShape" title="Change the node shape of every selected entity"></select>
+  <select id="selBucket" title="Collapse the selection into a bucket, or add it to an existing one"></select>
   <button id="selTagBtn" title="Add or remove tags on every selected entity">Tags…</button>
+  <button id="selCopyBtn" title="Copy the labels of every selected entity as a pasteable list">Copy labels</button>
+  <button id="selPinBtn" title="Anchor the selected nodes in place — physics keeps moving everything else">📌 Pin</button>
   <button id="selClearBtn">Clear</button>
 </div>
 
@@ -968,7 +1055,7 @@ Jane Doe,"1 Main St, Anytown",,person,address</code>
 const PRISTINE_HTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
 
 /* ---------- brand ---------- */
-const BRAND={name:"CaseWeaver",version:"v1.0",
+const BRAND={name:"CaseWeaver",version:"v1.001",
   tagline:"Every thread, one case — link analysis in one file. No install, no cloud, no account.",
   url:"https://github.com/CaseWeaver/caseweaver",
   repo:"https://github.com/CaseWeaver/caseweaver"};
@@ -994,7 +1081,7 @@ const emptySel=()=>{const o={};SELKEYS.forEach(k=>o[k]=[]);return o;};
 const NTYPES={
   P:{label:"Person",              tag:"",     shape:"star",         aliases:["p","person","people","individual","human","ind"]},
   C:{label:"Company / org",       tag:"Co",   shape:"dot",          aliases:["c","company","co","corp","org","organization","organisation","entity","business","firm","asset","bank","exchange","provider","vendor"]},
-  H:{label:"Infrastructure",      tag:"Infra",shape:"square",       aliases:["h","infrastructure","infra","host","server","system","machine","computer","workstation","endpoint","router","vm","vps","node"]},
+  H:{label:"Infrastructure",      tag:"Infra",shape:"square",       aliases:["h","infrastructure","infra","host","server","system","machine","computer","workstation","endpoint","router","vm","vps","node","voip","sip","sipgateway","sip_gateway","isp","softphone","soft_phone","cellphone","cell_phone","landline","landline_phone","phone_device","telecom"]},
   A:{label:"Online account",      tag:"Acct", shape:"diamond",      aliases:["a","account","onlineaccount","online_account","profile","persona","socialmedia","social_media","forumaccount"]},
   M:{label:"Malware / tool",      tag:"Malw", shape:"triangle",     aliases:["m","malware","tool","implant","ransomware","trojan","backdoor","exploit","botnetmalware","rat","stealer","loader"]},
   G:{label:"Group / crew",        tag:"Grp",  shape:"hexagon",      aliases:["g","group","gang","crew","apt","threatgroup","threat_group","threatactorgroup","ring","syndicate","cartel","botnet"]},
@@ -1150,6 +1237,7 @@ const CYBERICONS={
   wifi:{name:"Wi-Fi / AP",p:[{d:"M8 20a23 23 0 0 1 32 0"},{d:"M14 27a15 15 0 0 1 20 0"},{d:"M20 34a8 8 0 0 1 8 0"},{d:"M21.5 40a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0",f:1}]},
   web:{name:"Website / DNS",p:[{d:"M7 24a17 17 0 1 0 34 0a17 17 0 1 0 -34 0"},{d:"M7 24h34"},{d:"M24 7a9.5 17 0 1 0 0 34a9.5 17 0 1 0 0-34"}]},
   mail:{name:"Mail server",p:[{d:"M8 11h32a2 2 0 0 1 2 2v22a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V13a2 2 0 0 1 2-2z"},{d:"M7 14l17 13 17-13"}]},
+  telegram:{name:"Telegram",p:[{d:"M4 24a20 20 0 1 0 40 0a20 20 0 1 0 -40 0"},{d:"M34.9 14.1 12.4 22.8c-1 .4-1 1.1-.1 1.4l5.7 1.8 2.2 6.9c.3.9.8 1 1.4.4l3.1-3 5.8 4.3c.7.5 1.4.2 1.6-.8l3.6-18.3c.2-1-.4-1.5-1.3-1z",f:1}]},
   vpn:{name:"VPN / tunnel",p:[{d:"M24 4l16 6v11c0 10-6.6 17.6-16 23-9.4-5.4-16-13-16-23V10z"},{d:"M20 20a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"},{d:"M24 24v8"}]},
   proxy:{name:"Proxy",p:[{d:"M20 16h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V18a2 2 0 0 1 2-2z"},{d:"M4 24h14"},{d:"M30 24h13m0 0-4.5-4.5M43 24l-4.5 4.5"}]},
   terminal:{name:"Terminal / shell",p:[{d:"M8 8h32a3 3 0 0 1 3 3v26a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z"},{d:"M13 19l7 6-7 6"},{d:"M24 31h10"}]},
@@ -1163,7 +1251,13 @@ const CYBERICONS={
   c2:{name:"C2 / beacon",p:[{d:"M20.8 15a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0 -6.4 0",f:1},{d:"M14.5 6.5a13 13 0 0 0 0 17"},{d:"M33.5 6.5a13 13 0 0 1 0 17"},{d:"M18.8 10.3a7 7 0 0 0 0 9.4"},{d:"M29.2 10.3a7 7 0 0 1 0 9.4"},{d:"M24 18.5 17 42"},{d:"M24 18.5 31 42"},{d:"M19.5 33.5h9"}]},
   usb:{name:"USB / removable",p:[{d:"M18 6h12v11H18z"},{d:"M21.5 9.5v4"},{d:"M26.5 9.5v4"},{d:"M15 17h18a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V20a3 3 0 0 1 3-3z"}]},
   chip:{name:"Chip / IoT",p:[{d:"M15 15h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H15a2 2 0 0 1-2-2V17a2 2 0 0 1 2-2z"},{d:"M20 20h8v8h-8z"},{d:"M18 15V8"},{d:"M24 15V8"},{d:"M30 15V8"},{d:"M18 33v7"},{d:"M24 33v7"},{d:"M30 33v7"},{d:"M13 19H6"},{d:"M13 24H6"},{d:"M13 29H6"},{d:"M42 19h-7"},{d:"M42 24h-7"},{d:"M42 29h-7"}]},
-  camera:{name:"Camera / webcam",p:[{d:"M11.5 19a12.5 12.5 0 1 0 25 0a12.5 12.5 0 1 0 -25 0"},{d:"M19.8 19a4.2 4.2 0 1 0 8.4 0a4.2 4.2 0 1 0 -8.4 0",f:1},{d:"M24 31.5V38"},{d:"M15 42h18"}]}
+  camera:{name:"Camera / webcam",p:[{d:"M11.5 19a12.5 12.5 0 1 0 25 0a12.5 12.5 0 1 0 -25 0"},{d:"M19.8 19a4.2 4.2 0 1 0 8.4 0a4.2 4.2 0 1 0 -8.4 0",f:1},{d:"M24 31.5V38"},{d:"M15 42h18"}]},
+  voip:{name:"VOIP infrastructure",p:[{d:"M9 26h30a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3z"},{d:"M12 32.5a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0 -3.6 0",f:1},{d:"M20 32.5h16"},{d:"M17.5 15a9 9 0 0 1 13 0"},{d:"M13.5 10a15 15 0 0 1 21 0"},{d:"M22.2 20a2.5 2.5 0 1 0 3.6 0a2.5 2.5 0 1 0 -3.6 0",f:1}]},
+  softphone:{name:"Soft phone",p:[{d:"M7 8h26a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z"},{d:"M20 28v6"},{d:"M12 37h16"},{d:"M28 20c5 0 9 2 13 6l-3.5 3.5c-2-1.4-3.5-2.2-5.5-2.7l-1-4.3z",f:1},{d:"M12 14l4 4 7-7"}]},
+  cellphone:{name:"Cell phone",p:[{d:"M15 5h14a3 3 0 0 1 3 3v32a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z"},{d:"M20 38h4"},{d:"M36 8v4"},{d:"M40 5v7"},{d:"M44 2v10"}]},
+  landline:{name:"Landline phone",p:[{d:"M8 18c0-3 7.2-6 16-6s16 3 16 6v4a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2v-2.5c-1.8-.6-3.8-1-6-1s-4.2.4-6 1V22a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2z"},{d:"M14 28h20a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3z"},{d:"M20 33h8"},{d:"M20 38h8"}]},
+  sipgw:{name:"SIP gateway",p:[{d:"M12 16h24a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H12a3 3 0 0 1-3-3V19a3 3 0 0 1 3-3z"},{d:"M14 24h6m0 0-2.5-2.5M20 24l-2.5 2.5"},{d:"M34 24h-6m0 0 2.5-2.5M28 24l2.5 2.5"},{d:"M24 16V8m0 8"},{d:"M20 8h8"},{d:"M17 32v6h14v-6"}]},
+  isp:{name:"ISP",p:[{d:"M8 20a23 23 0 0 1 32 0"},{d:"M14 26.5a15 15 0 0 1 20 0"},{d:"M10 34h28a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"},{d:"M13 38a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0 -3.2 0",f:1},{d:"M20 38h14"}]}
 };
 const CYBER_KEYS=Object.keys(CYBERICONS);
 const _iconCache={};
@@ -1194,20 +1288,45 @@ let DATA;
 try{ DATA = JSON.parse(document.getElementById("case-data").textContent.trim()); }
 catch(e){ DATA = null; }
 if(!DATA || typeof DATA!=="object") DATA={};
+/* Browser-storage snapshot: Safari/Firefox can't overwrite a local file, so on
+   those browsers "Save case" stores the case here instead. On load, if a stored
+   snapshot is NEWER than the data embedded in this file, restore it — edits then
+   survive closing/reopening the same file without spawning new downloads. */
+function cwStoreKey(){ return "caseweaver:"+(((DATA&&DATA.config&&DATA.config.caseId)||"CASE-XXX")); }
+try{
+  const _raw=localStorage.getItem(cwStoreKey());
+  if(_raw){
+    const _snap=JSON.parse(_raw);
+    const _fileT=(DATA.config&&DATA.config.savedAt)||0;
+    const _snapT=(_snap&&_snap.config&&_snap.config.savedAt)||0;
+    if(_snap&&typeof _snap==="object"&&Array.isArray(_snap.nodes)&&_snapT>_fileT) DATA=_snap;
+  }
+}catch(e){}
 DATA.config   = DATA.config   || {caseId:"CASE-XXX",caseTitle:"New Investigation",subtitle:"network of entities & people",sourceNote:"Source: investigator-entered notes."};
 DATA.clusters = DATA.clusters || {c1:{name:"Entities",color:"#4363d8"}};
 DATA.nodes    = Array.isArray(DATA.nodes)?DATA.nodes:[];
 DATA.edges    = Array.isArray(DATA.edges)?DATA.edges:[];
 // normalise every node so downstream code never hits undefined
 function normalizeData(){
-  DATA.nodes.forEach(n=>{ n.type=NTYPES[n.type]?n.type:"C"; n.shape=(typeof n.shape==="string"&&SHAPE_KEYS.has(n.shape))?n.shape:""; n.icon=(typeof n.icon==="string"&&CYBERICONS[n.icon])?n.icon:""; n.emoji=(typeof n.emoji==="string")?n.emoji:""; n.photo=(typeof n.photo==="string")?n.photo:""; n.tags=Array.isArray(n.tags)?n.tags.map(t=>String(t).trim()).filter(Boolean):[]; n.sel=n.sel||{}; SELKEYS.forEach(k=>{n.sel[k]=Array.isArray(n.sel[k])?n.sel[k]:[];}); });
+  DATA.nodes.forEach(n=>{ n.type=NTYPES[n.type]?n.type:"C"; n.shape=(typeof n.shape==="string"&&SHAPE_KEYS.has(n.shape))?n.shape:""; n.icon=(typeof n.icon==="string"&&CYBERICONS[n.icon])?n.icon:""; n.emoji=(typeof n.emoji==="string")?n.emoji:""; n.photo=(typeof n.photo==="string")?n.photo:""; n.tags=Array.isArray(n.tags)?n.tags.map(t=>String(t).trim()).filter(Boolean):[]; n.sel=n.sel||{}; SELKEYS.forEach(k=>{n.sel[k]=Array.isArray(n.sel[k])?n.sel[k]:[];});
+    n.clusters=Array.isArray(n.clusters)?n.clusters.map(String).filter(Boolean):[];   // extra cluster memberships (primary stays n.cluster)
+    n.pinned=!!n.pinned;                                                              // anchored in place (physics can't move it)
+    n.x=(typeof n.x==="number"&&isFinite(n.x))?n.x:undefined;                         // remembered position (pinned nodes)
+    n.y=(typeof n.y==="number"&&isFinite(n.y))?n.y:undefined; });
   DATA.edges.forEach(e=>{ e.amount=(typeof e.amount==="number"&&isFinite(e.amount)&&e.amount>0)?e.amount:null; e.date=(typeof e.date==="string")?e.date:""; });
   DATA.bookmarks=Array.isArray(DATA.bookmarks)?DATA.bookmarks:[];
   DATA.annotations=Array.isArray(DATA.annotations)?DATA.annotations:[];
+  DATA.annotations.forEach(a=>{ if(typeof a.anchor!=="string"||!a.anchor)delete a.anchor; });
+  DATA.buckets=Array.isArray(DATA.buckets)?DATA.buckets.filter(b=>b&&b.id&&Array.isArray(b.members)):[];
+  DATA.buckets.forEach(b=>{ b.name=String(b.name||"Bucket"); b.members=b.members.map(String); b.collapsed=b.collapsed!==false; });
   if(typeof DATA.config.summary!=="string")DATA.config.summary="";
   const rpt=DATA.config.report; DATA.config.report=(rpt&&typeof rpt==="object")?rpt:{};
   DATA.config.hideBrand=!!DATA.config.hideBrand;
-  if(typeof DATA.config.currency!=="string"||!DATA.config.currency)DATA.config.currency="$";
+  if(typeof DATA.config.currency!=="string")DATA.config.currency="$";
+  const as=DATA.config.autosave; DATA.config.autosave=(as&&typeof as==="object")?as:{};
+  DATA.config.autosave.on=!!DATA.config.autosave.on;                                  // OFF by default — never per-interaction
+  const iv=DATA.config.autosave.interval; DATA.config.autosave.interval=(typeof iv==="number"&&isFinite(iv)&&iv>=60000)?iv:5*60000;
+  const sp=DATA.config.spacing; DATA.config.spacing=(typeof sp==="number"&&isFinite(sp)&&sp>=0.5&&sp<=3)?sp:1.5;  // default edge-length multiplier (wider spacing)
 }
 normalizeData();
 
@@ -1222,13 +1341,45 @@ let selMode=false, selFocus=null, phys=true, currentLayout="force", lensOn=false
 let traceOn=false, REDACT=false, presenting=false, prIdx=0;
 
 const $=id=>document.getElementById(id);
+
+/* ---------- undo (snapshot stack) + dirty flag for auto-save ---------- */
+let DIRTY=false;
+function markDirty(){ DIRTY=true; }
+const UNDO_MAX=50; const undoStack=[];
+function capturePositions(){ let pos={}; try{ if(network)pos=network.getPositions(); }catch(e){} return pos; }
+/* Call BEFORE any mutation of DATA. label is shown in the toast on undo. */
+function pushUndo(label){
+  try{ undoStack.push({label:label||"change",json:JSON.stringify(DATA),pos:capturePositions()});
+    if(undoStack.length>UNDO_MAX)undoStack.shift();
+    const b=$("undoBtn"); if(b){b.disabled=false;b.title="Undo: "+(label||"last change")+" (Ctrl/Cmd-Z)";}
+  }catch(e){}
+  markDirty();
+}
+function doUndo(){
+  const snap=undoStack.pop(); if(!snap){ toast("Nothing to undo"); return; }
+  try{ DATA=JSON.parse(snap.json); }catch(e){ toast("Undo failed"); return; }
+  normalizeData(); build(true,snap.pos);
+  const b=$("undoBtn"); if(b&&!undoStack.length){b.disabled=true;b.title="Nothing to undo";}
+  markDirty(); toast("Undone: "+snap.label);
+}
+document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&!e.altKey&&String(e.key).toLowerCase()==="z"){
+    const t=e.target; const typing=t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable);
+    if(typing)return;                       // let the browser undo text edits in fields
+    if(document.querySelector(".overlay.on"))return;  // not while a modal is open
+    e.preventDefault(); doUndo();
+  }
+});
+
 const shapeFor=t=>(NTYPES[t]||NTYPES.C).shape;
 const phoneKey=s=>{const d=(s.match(/\d/g)||[]).join("");return d.length>=7?d.slice(-10):d;};
 const norm=(type,v)=>type==="phone"?phoneKey(v):type==="mac"?String(v).toLowerCase().replace(/[^0-9a-f]/g,''):String(v).toLowerCase().replace(/\s+/g,' ').replace(/[.,]+$/,'').trim();
 const esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-function fmtAmt(n){ if(n==null||!isFinite(n))return ""; const c=(DATA.config&&DATA.config.currency)||"$";
-  if(n>=1e9)return c+(n/1e9).toFixed(n%1e9?1:0)+"B"; if(n>=1e6)return c+(n/1e6).toFixed(n%1e6?1:0)+"M";
-  if(n>=1e3)return c+(n/1e3).toFixed(n%1e3?1:0)+"k"; return c+Math.round(n); }
+function fmtAmt(n){ if(n==null||!isFinite(n))return ""; const c=(DATA.config&&typeof DATA.config.currency==="string")?DATA.config.currency:"$";
+  const suf=/^[A-Za-z]/.test(c);                 // alphabetic units (B, KB, pkts, flows, USD…) read better as suffixes
+  const wrap=v=>c===""?v:(suf?v+"\u2009"+c:c+v); // "" → plain number, "B" → 7.5k B, "$" → $7.5k
+  if(n>=1e9)return wrap((n/1e9).toFixed(n%1e9?1:0)+(suf?"G":"B")); if(n>=1e6)return wrap((n/1e6).toFixed(n%1e6?1:0)+"M");
+  if(n>=1e3)return wrap((n/1e3).toFixed(n%1e3?1:0)+"k"); return wrap(String(Math.round(n))); }
 function parseDate(s){ const t=Date.parse(String(s||"")); return isNaN(t)?null:t; }
 
 /* ---------- derive engine globals from DATA ---------- */
@@ -1243,13 +1394,35 @@ function syncFromData(){
     if(any) SEL[n.id]=g;
     if(n.sig && n.sig.trim()) SIG[n.id]=n.sig;
   });
-  // make sure every node's cluster exists
-  DATA.nodes.forEach(n=>{ if(!CLUSTERS[n.cluster]){ n.cluster=Object.keys(CLUSTERS)[0]||"c1"; } });
+  // make sure every node's cluster memberships exist
+  DATA.nodes.forEach(n=>{ if(!CLUSTERS[n.cluster]){ n.cluster=Object.keys(CLUSTERS)[0]||"c1"; }
+    n.clusters=(n.clusters||[]).filter(k=>CLUSTERS[k]&&k!==n.cluster); });
   if(!Object.keys(CLUSTERS).length){ CLUSTERS.c1={name:"Entities",color:"#4363d8"}; }
+  // drop bucket members that no longer exist; drop empty buckets
+  const nodeIds=new Set(DATA.nodes.map(n=>n.id));
+  DATA.buckets.forEach(b=>{ b.members=b.members.filter(id=>nodeIds.has(id)); });
+  DATA.buckets=DATA.buckets.filter(b=>b.members.length);
+  // drop note anchors whose node is gone
+  DATA.annotations.forEach(a=>{ if(a.anchor&&!nodeIds.has(a.anchor))delete a.anchor; });
 }
 
 /* ============================ BUILD / RENDER THE GRAPH ============================ */
-function build(){
+/* build(preserve, posOverride)
+   preserve=true  → keep node positions, camera, physics pause state and active filters
+                    across the rebuild (used for edits — the graph no longer jumps).
+   preserve=false → fresh layout + fit (used for imports / layout resets).
+   posOverride    → optional {id:{x,y}} map to restore instead of live positions (undo). */
+function build(preserve,posOverride){
+  // ---- capture the current scene before tearing the network down ----
+  const hadNet=!!network;
+  preserve=!!preserve&&hadNet;
+  let prevPos={},prevCam=null,prevPhys=phys,prevActive=null,prevTags=null,prevKnown=null;
+  if(preserve){
+    prevPos=posOverride||capturePositions();
+    try{ prevCam={pos:network.getViewPosition(),scale:network.getScale()}; }catch(e){}
+    prevActive=new Set(active); prevTags=new Set(activeTags);
+    prevKnown=new Set(Object.keys(CLUSTERS));   // clusters that existed before this rebuild
+  }
   syncFromData();
   // header
   document.title=DATA.config.caseId+" — "+DATA.config.caseTitle;
@@ -1262,32 +1435,69 @@ function build(){
   bigSet=new Set(degRanked.slice(0,Math.max(1,Math.round(degRanked.length*0.08))));
   midSet=new Set(degRanked.slice(bigSet.size,bigSet.size+Math.max(2,Math.round(degRanked.length*0.15))));
 
-  nodes=new vis.DataSet(N.map(([id,label,cl,type,role,desc,shape,emoji,photo,icon])=>{
+  // ---- buckets: members of a collapsed bucket are folded into one bucket node ----
+  const bucketOf={};   // member node id -> bucket id (collapsed buckets only)
+  DATA.buckets.forEach(b=>{ if(b.collapsed)b.members.forEach(id=>bucketOf[id]=b.id); });
+  const dataById={}; DATA.nodes.forEach(n=>dataById[n.id]=n);
+
+  nodes=new vis.DataSet(N.filter(([id])=>!bucketOf[id]).map(([id,label,cl,type,role,desc,shape,emoji,photo,icon])=>{
     const big=bigSet.has(id), mid=midSet.has(id);
-    const img = (photo&&photo.length&&!REDACT) ? photo
+    // NOTE: redaction masks only the visible label — the photo / icon / shape stays (see redactBtn)
+    const img = (photo&&photo.length) ? photo
       : ((icon&&CYBERICONS[icon]) ? iconToDataURL(icon,(CLUSTERS[cl]||{color:"#888"}).color,128)
       : ((emoji&&emoji.trim())?emojiToDataURL(emoji,128):null));
     const shp=img?"image":((shape&&SHAPE_KEYS.has(shape))?shape:shapeFor(type));
     const geomSize=type==="P"?(big?26:mid?20:13):(big?30:mid?22:15);
-    return {id,label:disp(label,type),group:cl,shape:shp, image:img||undefined,
+    const d=dataById[id]||{};
+    /* no vis `group` property: vis 10.x re-applies default group colours over explicit
+       ones on any nodes.update({hidden}) — cluster colour is always set explicitly */
+    const o={id,label:disp(label,type),shape:shp, image:img||undefined,
       size: img?(big?38:mid?30:24):geomSize,
-      _cl:cl,_type:type,_role:role,_desc:desc,_shape:shape||"",_emoji:emoji||"",_icon:icon||"",_photo:!!(photo&&photo.length),_raw:label,
+      _cl:cl,_cls:[cl].concat(d.clusters||[]),_type:type,_role:role,_desc:desc,_shape:shape||"",_emoji:emoji||"",_icon:icon||"",_photo:!!(photo&&photo.length),_raw:label,
       color:{background:(CLUSTERS[cl]||{color:"#888"}).color,border:GT.nodeBorder,
         highlight:{background:(CLUSTERS[cl]||{color:"#888"}).color,border:GT.nodeBorderHi}},
       font:{color:GT.font,size:big?15:12,strokeWidth:3,strokeColor:GT.fontStroke}};
+    // pinned: anchored in place while physics moves everything else
+    if(d.pinned){ o.fixed={x:true,y:true}; o._pinned=true;
+      if(typeof d.x==="number")o.x=d.x; if(typeof d.y==="number")o.y=d.y;
+      o.borderWidth=3; o.color.border=GT.nodeBorderHi; }
+    // preserved rebuild: restart every surviving node from where it was
+    const pp=preserve&&prevPos[id]; if(pp){ o.x=pp.x; o.y=pp.y; }
+    return o;
   }));
+  // bucket nodes (one per collapsed bucket)
+  DATA.buckets.forEach(b=>{ if(!b.collapsed)return;
+    const o={id:b.id,label:"📦 "+b.name+" ("+b.members.length+")",shape:"box",_bucket:true,
+      color:{background:GT.edgeHi,border:GT.nodeBorder,highlight:{background:GT.edgeHi,border:GT.nodeBorderHi}},
+      font:{color:GT.fontStroke===GT.bg?GT.font:"#fff",size:14,face:"inherit"},margin:10,borderWidth:2};
+    const pp=preserve&&prevPos[b.id]; if(pp){o.x=pp.x;o.y=pp.y;}
+    else if(typeof b.x==="number"&&typeof b.y==="number"){o.x=b.x;o.y=b.y;}
+    nodes.add(o); });
   // tag index + annotation (sticky-note) nodes
   Object.keys(nodeTags).forEach(k=>delete nodeTags[k]);
   DATA.nodes.forEach(n=>{ nodeTags[n.id]=n.tags||[]; });
-  DATA.annotations.forEach(a=>nodes.add({id:a.id,label:a.text,shape:"text",_note:true,physics:false,
-    x:a.x,y:a.y,font:{size:20,color:GT.font,strokeWidth:5,strokeColor:GT.fontStroke,bold:true}}));
+  DATA.annotations.forEach(a=>{
+    const anchored=!!(a.anchor&&!bucketOf[a.anchor]&&dataById[a.anchor]);
+    nodes.add({id:a.id,label:a.text,shape:"text",_note:true,physics:anchored,
+      x:a.x,y:a.y,font:{size:20,color:GT.font,strokeWidth:5,strokeColor:GT.fontStroke,bold:true}});});
   edges=new vis.DataSet();
-  const edgeLen=(f,t)=>Math.max(75,Math.min(300,60+11*((degree[f]||1)+(degree[t]||1))));
+  // anchored notes ride a short leash edge to their node — they follow it under physics
+  DATA.annotations.forEach(a=>{ if(a.anchor&&!bucketOf[a.anchor]&&dataById[a.anchor])
+    edges.add({id:"na_"+a.id,from:a.id,to:a.anchor,_kind:"note",length:70,dashes:[2,4],width:1,
+      color:{color:GT.edgeWeak,highlight:GT.edgeWeak,opacity:0.55},arrows:{to:{enabled:false}},smooth:false,label:""}); });
+  const SPACING=(DATA.config&&DATA.config.spacing)||1.5;
+  const edgeLen=(f,t)=>Math.round(SPACING*Math.max(75,Math.min(300,60+11*((degree[f]||1)+(degree[t]||1)))));
   // amount → width scale (sqrt), computed against the case's largest documented amount
   const maxAmt=Math.max(0,...E.map(e=>e[4]||0));
   const amtWidth=a=>!a||!maxAmt?null:1.2+3.8*Math.sqrt(a/maxAmt);
-  const relBatch=[];
-  E.forEach(([f,t,label,weak,amount,date],i)=>{ if(!nodes.get(f)||!nodes.get(t))return;
+  const relBatch=[]; const bkAgg={};   // bucket-aggregated edges, deduped by from|to
+  E.forEach(([f,t,label,weak,amount,date],i)=>{
+    const f2=bucketOf[f]||f, t2=bucketOf[t]||t;
+    if(f2===t2&&f2!==f){ return; }                       // edge fully inside one bucket
+    if(!nodes.get(f2)||!nodes.get(t2))return;
+    if(f2!==f||t2!==t){                                  // at least one end folded into a bucket
+      const k=f2+"|"+t2; const a=bkAgg[k]=bkAgg[k]||{from:f2,to:t2,n:0,amt:0,labels:new Set()};
+      a.n++; if(amount)a.amt+=amount; if(label)a.labels.add(label); return; }
     const lbl=label+(amount?((label?" · ":"")+fmtAmt(amount)):"");
     const w=amtWidth(amount)||(weak?1:1.5);
     relBatch.push({id:"e"+i,from:f,to:t,label:lbl,_lbl:lbl,_weak:!!weak,_kind:"rel",
@@ -1295,6 +1505,14 @@ function build(){
       length:edgeLen(f,t),
       color:{color:weak?GT.edgeWeak:GT.edge,highlight:GT.edgeHi,opacity:weak?0.6:0.85},
       dashes:weak?[3,4]:false,width:w,
+      font:{color:GT.edgeFont,size:9,strokeWidth:3,strokeColor:GT.edgeFontStroke,align:"middle"},
+      arrows:{to:{enabled:true,scaleFactor:0.4}},smooth:false});});
+  Object.values(bkAgg).forEach((a,i)=>{
+    const lbl=(a.n>1?a.n+" links":[...a.labels][0]||"")+(a.amt?" · "+fmtAmt(a.amt):"");
+    relBatch.push({id:"bk"+i,from:a.from,to:a.to,label:lbl,_lbl:lbl,_weak:false,_kind:"rel",
+      _amt:a.amt||null,_date:"",_dts:null,_w:Math.min(4,1.5+0.4*(a.n-1)),
+      length:edgeLen(a.from,a.to),
+      color:{color:GT.edge,highlight:GT.edgeHi,opacity:0.85},dashes:false,width:Math.min(4,1.5+0.4*(a.n-1)),
       font:{color:GT.edgeFont,size:9,strokeWidth:3,strokeColor:GT.edgeFontStroke,align:"middle"},
       arrows:{to:{enabled:true,scaleFactor:0.4}},smooth:false});});
   edges.add(relBatch);
@@ -1313,57 +1531,79 @@ function build(){
     const pairs=[];
     if(ids.length<=6){ for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++)pairs.push([ids[i],ids[j]]); }
     else { for(let i=1;i<ids.length;i++)pairs.push([ids[0],ids[i]]); }
-    pairs.forEach(([a,b])=>selEdgeBatch.push({id:"s"+(sidx++),from:a,to:b,_kind:"sel",_seltype:o.type,
+    const seen=new Set();
+    pairs.forEach(([a0,b0])=>{const a=bucketOf[a0]||a0,b=bucketOf[b0]||b0;
+      if(a===b)return; const dk=a+"|"+b+"|"+o.type; if(seen.has(dk))return; seen.add(dk);
+      if(!nodes.get(a)||!nodes.get(b))return;
+      selEdgeBatch.push({id:"s"+(sidx++),from:a,to:b,_kind:"sel",_seltype:o.type,
         _selkey:o.type+"|"+norm(o.type,o.val),hidden:true,label:"",dashes:[2,3],width:2,physics:false,
         smooth:{type:"curvedCW",roundness:0.2},
         color:{color:SELTYPES[o.type].raw,highlight:SELTYPES[o.type].raw,opacity:0.9},
-        arrows:{to:{enabled:false}}}));
+        arrows:{to:{enabled:false}}});});
   });
   edges.add(selEdgeBatch);
 
   // (re)create network — physics profile adapts to graph size
   if(network){ network.destroy(); network=null; }
-  active.clear(); Object.keys(CLUSTERS).forEach(k=>active.add(k));
+  active.clear();
+  if(preserve&&prevActive){
+    // keep the user's cluster visibility; clusters created during the edit start visible
+    Object.keys(CLUSTERS).forEach(k=>{ if(prevActive.has(k)||!prevKnown.has(k))active.add(k); });
+    if(!active.size)Object.keys(CLUSTERS).forEach(k=>active.add(k));
+  } else Object.keys(CLUSTERS).forEach(k=>active.add(k));
   const container=$("graph");
   const BIG=N.length>250;
   const FORCE={enabled:true,solver:"barnesHut",
-    barnesHut:{gravitationalConstant:-7000,centralGravity:0.35,springLength:95,springConstant:0.055,damping:0.62,avoidOverlap:BIG?0.2:0.7},
-    stabilization:{iterations:BIG?Math.max(80,Math.round(40000/N.length)):250,updateInterval:50},
+    barnesHut:{gravitationalConstant:Math.round(-7000*SPACING),centralGravity:0.35,springLength:Math.round(95*SPACING),springConstant:0.055,damping:0.62,avoidOverlap:BIG?0.35:0.7},
+    stabilization:preserve?false:{iterations:BIG?Math.max(80,Math.round(40000/N.length)):250,updateInterval:50},
     minVelocity:BIG?1.5:0.6};
   window._FORCE=FORCE;
   network=new vis.Network(container,{nodes,edges},{
     physics:FORCE,
-    layout:{improvedLayout:N.length<=200},          // improvedLayout is O(expensive) beyond ~200 nodes
+    layout:{improvedLayout:!preserve&&N.length<=200},  // improvedLayout is O(expensive) beyond ~200 nodes
     interaction:{hover:true,tooltipDelay:150,keyboard:false,multiselect:true,
       hideEdgesOnDrag:BIG,hideEdgesOnZoom:BIG},      // keep pan/zoom fluid on big graphs
     edges:{smooth:false,selectionWidth:2},nodes:{borderWidth:1.5}});
-  currentLayout="force"; phys=true; lensOn=false; selMode=false; selFocus=null; syncLayoutBtns();
+  lensOn=false; selMode=false; selFocus=null;
+  if(preserve){
+    // pick the scene back up exactly where the user left it
+    phys=prevPhys; network.setOptions({physics:{enabled:phys}}); syncPhysicsBtn(phys);
+    if(prevCam){ try{ network.moveTo({position:prevCam.pos,scale:prevCam.scale}); }catch(e){} }
+    activeTags.clear(); prevTags&&prevTags.forEach(t=>activeTags.add(t));
+  } else { currentLayout="force"; phys=true; syncPhysicsBtn(true); }
+  syncLayoutBtns();
   $("lensBtn").textContent="Lens: off"; $("lensBtn").classList.remove("active");
-  $("physics").textContent="Pause physics";
   const smBtn=$("selMode"); smBtn.classList.remove("active"); smBtn.textContent="Show shared-selector links";
 
   network.on("click",p=>{
     if(traceOn&&!p.nodes.length){ clearTrace(); }
     if(lensOn){ if(p.nodes.length)applyLens(p.nodes[0]); else clearLens(); }
-    if(p.nodes.length){ const nid=p.nodes[0]; if(String(nid).indexOf("note_")===0){updateSelBar();return;} showDetail(nid); }
+    if(p.nodes.length){ const nid=p.nodes[0]; if(String(nid).indexOf("note_")===0){updateSelBar();return;}
+      if(String(nid).indexOf("bucket:")===0){ showBucketDetail(nid); updateSelBar(); return; } showDetail(nid); }
     else { $("detail").style.display="none"; }
     updateSelBar();
   });
   network.on("selectNode",updateSelBar);
   network.on("deselectNode",updateSelBar);
   network.on("doubleClick",p=>{ if(!p.nodes.length)return; const nid=p.nodes[0];
-    if(String(nid).indexOf("note_")===0){ if(confirm("Delete this note?")){ DATA.annotations=DATA.annotations.filter(a=>a.id!==nid); nodes.remove(nid); } return; }
+    if(String(nid).indexOf("note_")===0){ if(confirm("Delete this note?")){ pushUndo("delete note"); DATA.annotations=DATA.annotations.filter(a=>a.id!==nid); nodes.remove(nid); edges.get({filter:e=>e._kind==="note"&&e.from===nid}).forEach(e=>edges.remove(e.id)); } return; }
+    if(String(nid).indexOf("bucket:")===0){ bucketExpand(nid); return; }
     openEditor(nid); });
-  network.on("dragEnd",p=>{ (p.nodes||[]).forEach(id=>{ if(String(id).indexOf("note_")===0){
-    const pos=network.getPositions([id])[id]; const a=DATA.annotations.find(x=>x.id===id); if(a&&pos){a.x=pos.x;a.y=pos.y;} } }); });
+  network.on("dragEnd",p=>{ if(!(p.nodes||[]).length)return; markDirty();
+    p.nodes.forEach(id=>{ const sid=String(id); const pos=network.getPositions([id])[id]; if(!pos)return;
+    if(sid.indexOf("note_")===0){ const a=DATA.annotations.find(x=>x.id===id); if(a){a.x=pos.x;a.y=pos.y;} return; }
+    if(sid.indexOf("bucket:")===0){ const b=DATA.buckets.find(x=>x.id===id); if(b){b.x=pos.x;b.y=pos.y;} return; }
+    const d=DATA.nodes.find(n=>n.id===id); if(d&&d.pinned){ d.x=pos.x; d.y=pos.y; } }); });
   network.once("stabilizationIterationsDone",()=>{network.fit();updateStats();
     if(BIG){ network.setOptions({physics:{enabled:false}}); syncPhysicsBtn(false); }}); // auto-pause on big graphs
   // edge-label level-of-detail: hide the 1000s of label glyphs when zoomed out (they're the FPS killer)
   if(BIG){ let zt=null; network.on("zoom",()=>{ clearTimeout(zt); zt=setTimeout(()=>setEdgeLabelLOD(network.getScale()>0.55),140); });
     setEdgeLabelLOD(false); }
 
-  activeTags.clear(); traceOn=false; traceStart=null;
-  buildLegends(); buildRootSel(); renderShared(); renderTags(); renderBookmarks(); syncLayoutBtns(); updateStats(); updateSelBar();
+  if(!preserve)activeTags.clear();
+  traceOn=false; traceStart=null;
+  buildLegends(); buildRootSel(); renderShared(); renderTags(); renderBookmarks(); renderBuckets(); syncLayoutBtns(); updateStats(); updateSelBar();
+  if(preserve){ syncFilterUI(); applyFilters(); }
 }
 
 /* ---------- legends & selectors sidebar ---------- */
@@ -1405,12 +1645,14 @@ function renderShared(){
   $("sharedCnt").textContent=list.length;
   const sharedListEl=$("sharedList");
   sharedListEl.innerHTML=list.map(o=>{const key=o.type+"|"+norm(o.type,o.val);
-    const names=[...o.ids].map(id=>{const n=nodes.get(id);return n?disp(n._raw||n.label,n._type):id;});
+    const names=[...o.ids].map(id=>{const n=nodes.get(id);if(n)return disp(n._raw||n.label,n._type);
+      const d=DATA.nodes.find(x=>x.id===id);return d?disp(d.label,d.type):id;});
     return `<div class="sitem ${selFocus===key?'on':''}" data-key="${esc(key)}" style="border-left-color:${SELTYPES[o.type].raw}">
       <div class="v">${esc(dispSel(o.val,o.type))}</div>
-      <div class="m"><b>${o.ids.size}</b> entities · ${SELTYPES[o.type].label} — ${esc(names.join(" · "))}</div></div>`;
+      <div class="m"><b>${o.ids.size}</b> entities · ${SELTYPES[o.type].label} — ${moreList(names)}</div></div>`;
   }).join("")||"<div class='hint'>No shared selectors yet. Add matching addresses / emails / phones to two entities and they surface here.</div>";
-  sharedListEl.querySelectorAll(".sitem").forEach(el=>el.onclick=()=>focusSelector(el.dataset.key));}
+  sharedListEl.querySelectorAll(".sitem").forEach(el=>el.onclick=e=>{ if(e.target.classList.contains("more-toggle"))return; focusSelector(el.dataset.key); });
+  bindMoreToggles(sharedListEl);}
 function focusSelector(key){
   const o=shared.find(s=>s.type+"|"+norm(s.type,s.val)===key);if(!o)return;
   selFocus=(selFocus===key)?null:key;
@@ -1441,6 +1683,8 @@ $("flowApply").onclick=()=>{
   applyFilters(); toast("Flow filter applied");
 };
 $("flowClear").onclick=()=>{ flowMin=flowFrom=flowTo=null; $("flowMin").value="";$("flowFrom").value="";$("flowTo").value=""; applyFilters(); };
+$("connMin").oninput=()=>{ const v=parseInt($("connMin").value,10); connMin=isFinite(v)&&v>0?v:0; if(nodes)applyFilters(); };
+$("connClear").onclick=()=>{ connMin=0; $("connMin").value=""; if(nodes)applyFilters(); };
 
 /* ---------- trace funds (directional BFS over relationship edges) ---------- */
 let traceStart=null, traceDir=true;
@@ -1467,23 +1711,94 @@ function updateSelBar(){
   const ids=selectedEntityIds(), bar=$("selBar");
   if(ids.length>=2){
     bar.classList.add("on"); $("selCount").textContent=ids.length+" selected";
-    $("selCluster").innerHTML='<option value="">Move to cluster…</option>'+
-      Object.entries(DATA.clusters).map(([k,v])=>`<option value="${esc(k)}">${esc(v.name)}</option>`).join("")+
-      '<option value="__new__">+ New cluster…</option>';
+    const clOpts=Object.entries(DATA.clusters).map(([k,v])=>`<option value="${esc(k)}">${esc(v.name)}</option>`).join("");
+    $("selCluster").innerHTML='<option value="">Move to cluster…</option>'+clOpts+'<option value="__new__">+ New cluster…</option>';
+    $("selAddCluster").innerHTML='<option value="">Also add to cluster…</option>'+clOpts+'<option value="__new__">+ New cluster…</option>';
+    $("selShape").innerHTML='<option value="">Set shape…</option><option value="__auto__">Auto (by type)</option>'+
+      SHAPES.filter(s=>s.key).map(s=>`<option value="${esc(s.key)}">${esc(s.name)}</option>`).join("");
+    $("selBucket").innerHTML='<option value="">Bucket…</option><option value="__new__">+ Collapse into new bucket…</option>'+
+      DATA.buckets.map(b=>`<option value="${esc(b.id)}">Add to “${esc(b.name)}”</option>`).join("");
+    const allPinned=ids.every(id=>{const d=DATA.nodes.find(n=>n.id===id);return d&&d.pinned;});
+    $("selPinBtn").textContent=allPinned?"📌 Unpin":"📌 Pin";
   } else bar.classList.remove("on");
 }
 $("selCluster").onchange=()=>{
   const v=$("selCluster").value; $("selCluster").value=""; if(!v)return;
   const ids=selectedEntityIds(); if(!ids.length)return;
   const doMove=key=>{ if(!DATA.clusters[key])return;
-    ids.forEach(id=>{ const d=DATA.nodes.find(n=>n.id===id); if(d)d.cluster=key; });
+    pushUndo("move to cluster");
+    ids.forEach(id=>{ const d=DATA.nodes.find(n=>n.id===id); if(d){d.cluster=key; d.clusters=(d.clusters||[]).filter(k=>k!==key);} });
     const col=(DATA.clusters[key]||{}).color||"#888";
-    nodes.update(ids.map(id=>({id,group:key,_cl:key,
-      color:{background:col,border:GT.nodeBorder,highlight:{background:col,border:GT.nodeBorderHi}}})));
+    nodes.update(ids.map(id=>{ const d=DATA.nodes.find(n=>n.id===id)||{};
+      return {id,_cl:key,_cls:[key].concat(d.clusters||[]),
+      color:{background:col,border:GT.nodeBorder,highlight:{background:col,border:GT.nodeBorderHi}}};}));
     active.add(key); buildLegends(); syncFilterUI(); applyFilters();
     toast(ids.length+" entities moved to \""+DATA.clusters[key].name+"\"");
   };
   if(v==="__new__"){ addClusterPrompt(k=>{ if(k)doMove(k); }); } else doMove(v);
+};
+/* multi-cluster: ADD membership — never removes the node from its existing cluster(s) */
+$("selAddCluster").onchange=()=>{
+  const v=$("selAddCluster").value; $("selAddCluster").value=""; if(!v)return;
+  const ids=selectedEntityIds(); if(!ids.length)return;
+  const doAdd=key=>{ if(!DATA.clusters[key])return;
+    pushUndo("add to cluster");
+    ids.forEach(id=>{ const d=DATA.nodes.find(n=>n.id===id); if(!d)return;
+      if(d.cluster===key)return; d.clusters=d.clusters||[]; if(!d.clusters.includes(key))d.clusters.push(key); });
+    nodes.update(ids.map(id=>{ const d=DATA.nodes.find(n=>n.id===id)||{};
+      return {id,_cls:[d.cluster].concat(d.clusters||[])};}));
+    active.add(key); buildLegends(); syncFilterUI(); applyFilters();
+    toast(ids.length+" entities also added to \""+DATA.clusters[key].name+"\" — existing clusters kept");
+  };
+  if(v==="__new__"){ addClusterPrompt(k=>{ if(k)doAdd(k); }); } else doAdd(v);
+};
+/* bulk shape change */
+$("selShape").onchange=()=>{
+  const v=$("selShape").value; $("selShape").value=""; if(!v)return;
+  const ids=selectedEntityIds(); if(!ids.length)return;
+  pushUndo("change shape");
+  const key=v==="__auto__"?"":v;
+  ids.forEach(id=>{ const d=DATA.nodes.find(n=>n.id===id); if(d)d.shape=key; });
+  nodes.update(ids.map(id=>{ const d=DATA.nodes.find(n=>n.id===id)||{}; const n=nodes.get(id)||{};
+    if(n.shape==="image")return {id};   // photo/icon/emoji nodes keep their image
+    return {id,shape:key||shapeFor(d.type),_shape:key}; }));
+  toast("Shape updated on "+ids.length+" entities");
+};
+/* copy the selected labels as a pasteable list */
+function copyTextList(lines,what){
+  const text=lines.join("\n");
+  const done=()=>toast("Copied "+lines.length+" "+what+" to clipboard");
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done,()=>{prompt("Copy the list below:",text);}); }
+  else prompt("Copy the list below:",text);
+}
+$("selCopyBtn").onclick=()=>{
+  const ids=selectedEntityIds(); if(!ids.length)return;
+  const lines=ids.map(id=>{ const d=DATA.nodes.find(n=>n.id===id); return d?disp(d.label,d.type):id; });
+  copyTextList(lines,"labels");
+};
+/* pin / unpin selection: anchored nodes hold their spot while physics moves the rest */
+function setPinned(ids,pin){
+  if(!ids.length)return; pushUndo(pin?"pin nodes":"unpin nodes");
+  const posMap=capturePositions();
+  ids.forEach(id=>{ const d=DATA.nodes.find(n=>n.id===id); if(!d)return; d.pinned=pin;
+    const p=posMap[id]; if(pin&&p){d.x=p.x;d.y=p.y;} if(!pin){delete d.x;delete d.y;} });
+  nodes.update(ids.map(id=>({id,fixed:pin?{x:true,y:true}:false,_pinned:pin,
+    borderWidth:pin?3:1.5})));
+  toast(ids.length+(pin?" node(s) pinned — physics keeps moving everything else":" node(s) released"));
+  updateSelBar();
+}
+$("selPinBtn").onclick=()=>{
+  const ids=selectedEntityIds(); if(!ids.length)return;
+  const allPinned=ids.every(id=>{const d=DATA.nodes.find(n=>n.id===id);return d&&d.pinned;});
+  setPinned(ids,!allPinned);
+};
+/* collapse selection into a bucket / add to an existing one */
+$("selBucket").onchange=()=>{
+  const v=$("selBucket").value; $("selBucket").value=""; if(!v)return;
+  const ids=selectedEntityIds(); if(!ids.length)return;
+  if(v==="__new__"){ const name=prompt("Bucket name:","Bucket "+(DATA.buckets.length+1)); if(name==null)return;
+    bucketCreate(name.trim()||("Bucket "+(DATA.buckets.length+1)),ids); }
+  else bucketAddMembers(v,ids);
 };
 $("selTagBtn").onclick=()=>{
   const ids=selectedEntityIds(); if(!ids.length)return;
@@ -1491,6 +1806,7 @@ $("selTagBtn").onclick=()=>{
   if(raw==null)return;
   const toks=raw.split(",").map(t=>t.trim()).filter(Boolean); if(!toks.length)return;
   const add=toks.filter(t=>t[0]!=="-"), rem=toks.filter(t=>t[0]==="-").map(t=>t.slice(1).trim()).filter(Boolean);
+  pushUndo("bulk tag edit");
   ids.forEach(id=>{ const d=DATA.nodes.find(n=>n.id===id); if(!d)return;
     d.tags=d.tags||[]; add.forEach(t=>{ if(!d.tags.includes(t))d.tags.push(t); });
     if(rem.length)d.tags=d.tags.filter(t=>!rem.includes(t));
@@ -1499,6 +1815,105 @@ $("selTagBtn").onclick=()=>{
   toast("Tags updated on "+ids.length+" entities");
 };
 $("selClearBtn").onclick=()=>{ if(network)network.unselectAll(); updateSelBar(); };
+
+/* ---------- buckets: collapse many nodes into one expandable container ---------- */
+let bucketSeq=0;
+function bucketById(id){ return DATA.buckets.find(b=>b.id===id); }
+function bucketCreate(name,ids){
+  pushUndo("create bucket");
+  let id; do{ id="bucket:"+(++bucketSeq); }while(DATA.buckets.some(b=>b.id===id));
+  // a node can live in ONE bucket — joining a new one leaves any previous bucket
+  DATA.buckets.forEach(b=>{ b.members=b.members.filter(m=>!ids.includes(m)); });
+  // drop the new bucket roughly where its members were
+  let cx=0,cy=0,cn=0; const posMap=capturePositions();
+  ids.forEach(i=>{const p=posMap[i]; if(p){cx+=p.x;cy+=p.y;cn++;}});
+  const b={id,name,members:ids.slice(),collapsed:true};
+  if(cn){b.x=cx/cn;b.y=cy/cn;}
+  DATA.buckets.push(b);
+  build(true); toast("Bucket \""+name+"\" created with "+ids.length+" nodes — click it to explore, double-click to expand");
+}
+function bucketAddMembers(id,ids){
+  const b=bucketById(id); if(!b)return;
+  pushUndo("add to bucket");
+  DATA.buckets.forEach(ob=>{ if(ob.id!==id)ob.members=ob.members.filter(m=>!ids.includes(m)); });
+  ids.forEach(i=>{ if(!b.members.includes(i))b.members.push(i); });
+  build(true); toast(ids.length+" node(s) added to \""+b.name+"\"");
+}
+function bucketExpand(id){
+  const b=bucketById(id); if(!b)return;
+  pushUndo("expand bucket");
+  b.collapsed=false; build(true);
+  toast("Bucket \""+b.name+"\" expanded — its nodes are back on the graph (re-collapse from the Buckets panel)");
+}
+function bucketCollapse(id){
+  const b=bucketById(id); if(!b)return;
+  pushUndo("collapse bucket"); b.collapsed=true; build(true);
+  toast("Bucket \""+b.name+"\" collapsed");
+}
+function bucketRemoveMember(id,member){
+  const b=bucketById(id); if(!b)return;
+  pushUndo("remove from bucket");
+  b.members=b.members.filter(m=>m!==member);
+  if(!b.members.length)DATA.buckets=DATA.buckets.filter(x=>x.id!==id);
+  build(true); if(bucketById(id))showBucketDetail(id);
+}
+function bucketDissolve(id){
+  const b=bucketById(id); if(!b)return;
+  pushUndo("dissolve bucket");
+  DATA.buckets=DATA.buckets.filter(x=>x.id!==id);
+  build(true); $("detail").style.display="none";
+  toast("Bucket \""+b.name+"\" dissolved — all nodes restored to the graph");
+}
+function bucketLabels(id){ const b=bucketById(id); if(!b)return[];
+  return b.members.map(m=>{ const d=DATA.nodes.find(n=>n.id===m); return d?disp(d.label,d.type):m; }); }
+function showBucketDetail(id){
+  const b=bucketById(id); if(!b)return;
+  const rows=b.members.map(m=>{ const d=DATA.nodes.find(n=>n.id===m); if(!d)return"";
+    return `<div class="conn bkrow" data-id="${esc(m)}"><b>${esc(disp(d.label,d.type))}</b>
+      <span class="bkx" data-id="${esc(m)}" title="Remove from bucket">✕</span>
+      <br><span class="rel">${esc(typeLabel(d.type))}</span></div>`; }).join("");
+  detailBody().innerHTML=`<h3>📦 ${esc(b.name)}</h3>
+    <span class="clbadge" style="background:${GT.edgeHi}">Bucket · ${b.members.length} nodes</span>
+    <div class="btns" style="margin:6px 0;flex-wrap:wrap">
+      <button id="bkExpand">${b.collapsed?"Expand onto graph":"Collapse"}</button>
+      <button id="bkCopy" title="Copy every node label in this bucket">Copy labels</button>
+      <button id="bkRename">Rename</button>
+      <button id="bkDissolve" class="danger" title="Delete the bucket — nodes return to the graph">Dissolve</button>
+    </div>
+    <h4>Inside this bucket (${b.members.length})</h4>${rows||"<div class='hint'>Empty.</div>"}`;
+  detail().style.display="block";
+  $("bkExpand").onclick=()=>{ b.collapsed?bucketExpand(id):bucketCollapse(id); if(bucketById(id))showBucketDetail(id); };
+  $("bkCopy").onclick=()=>copyTextList(bucketLabels(id),"bucket labels");
+  $("bkRename").onclick=()=>{ const nm=prompt("Bucket name:",b.name); if(nm==null||!nm.trim())return;
+    pushUndo("rename bucket"); b.name=nm.trim(); build(true); showBucketDetail(id); };
+  $("bkDissolve").onclick=()=>{ if(confirm("Dissolve this bucket? Its nodes return to the graph."))bucketDissolve(id); };
+  detailBody().querySelectorAll(".bkx").forEach(el=>el.onclick=e=>{ e.stopPropagation(); bucketRemoveMember(id,el.dataset.id); });
+  detailBody().querySelectorAll(".bkrow").forEach(el=>el.onclick=e=>{ if(e.target.classList.contains("bkx"))return;
+    const t=el.dataset.id; if(nodes.get(t)){ network.selectNodes([t]); network.focus(t,{scale:1.1,animation:true}); showDetail(t); } else showDetail2Data(t); });
+}
+/* read-only mini-dossier for a node currently hidden inside a collapsed bucket */
+function showDetail2Data(id){
+  const d=DATA.nodes.find(n=>n.id===id); if(!d)return;
+  const cl=DATA.clusters[d.cluster]||{name:d.cluster,color:"#888"};
+  detailBody().innerHTML=`<h3>${esc(disp(d.label,d.type))}</h3><div class="role">${esc(d.role||"")}</div>
+    <span class="clbadge" style="background:${cl.color}">${esc(cl.name)} · ${typeLabel(d.type)}</span>
+    <div class="hint" style="margin:6px 0">This node is inside a collapsed bucket — expand the bucket to work with it on the graph.</div>
+    <div class="desc">${esc(d.desc||"—")}</div>`;
+  detail().style.display="block";
+}
+/* sidebar list of all buckets */
+function renderBuckets(){
+  const box=$("bucketBox"), list=$("bucketList"); if(!box||!list)return;
+  box.style.display=DATA.buckets.length?"":"none";
+  $("bucketCnt").textContent=DATA.buckets.length||"";
+  list.innerHTML=DATA.buckets.map(b=>`<div class="bkitem" data-id="${esc(b.id)}">
+      <b>📦 ${esc(b.name)}</b> <span class="cnt">${b.members.length}</span>
+      <button class="bktoggle" data-id="${esc(b.id)}">${b.collapsed?"Expand":"Collapse"}</button>
+    </div>`).join("");
+  list.querySelectorAll(".bkitem").forEach(el=>el.onclick=e=>{ if(e.target.tagName==="BUTTON")return; showBucketDetail(el.dataset.id); });
+  list.querySelectorAll(".bktoggle").forEach(el=>el.onclick=e=>{ e.stopPropagation();
+    const b=bucketById(el.dataset.id); if(!b)return; b.collapsed?bucketExpand(b.id):bucketCollapse(b.id); });
+}
 
 // Shift+drag from a node = draw a new link to another node
 function startLinkDraw(srcId,gr,sx,sy){
@@ -1527,8 +1942,9 @@ function startLinkDraw(srcId,gr,sx,sy){
     if(!sN||!tN)return;
     const lbl=prompt(`New link: ${sN.label} → ${tN.label}\nRelationship label (optional):`,"");
     if(lbl===null)return; // cancelled
+    pushUndo("draw link");
     DATA.edges.push({from:srcId,to:tgt,label:String(lbl).trim(),weak:0,amount:null,date:""});
-    build();
+    build(true);
     toast(`Linked ${sN.label} → ${tN.label} — open either dossier to edit or delete it`);
   };
   window.addEventListener("mousemove",move,true);
@@ -1581,27 +1997,37 @@ function dispSel(v,type){ if(!REDACT)return v; v=String(v);
 $("redactBtn").onclick=()=>{ REDACT=!REDACT;
   $("redactBtn").textContent="Redaction: "+(REDACT?"on":"off");
   $("redactBtn").classList.toggle("active",REDACT);
-  // re-label graph nodes (photos hidden under redaction), refresh sidebar
-  const nu=[]; nodes.forEach(n=>{ if(n._note)return;
+  // re-label graph nodes — ONLY the visible label is masked; photo / icon / shape stay as-is
+  const nu=[]; nodes.forEach(n=>{ if(n._note||n._bucket)return;
     const d=DATA.nodes.find(x=>x.id===n.id); if(!d)return;
-    const img=(!REDACT&&d.photo)?d.photo:((d.icon&&CYBERICONS[d.icon])?iconToDataURL(d.icon,(DATA.clusters[d.cluster]||{color:"#888"}).color,128):((d.emoji&&d.emoji.trim())?emojiToDataURL(d.emoji,128):null));
-    nu.push({id:n.id,label:disp(d.label,d.type),
-      shape:img?"image":((d.shape&&SHAPE_KEYS.has(d.shape))?d.shape:shapeFor(d.type)),image:img||undefined}); });
+    nu.push({id:n.id,label:disp(d.label,d.type)}); });
   nodes.update(nu); renderShared(); $("detail").style.display="none";
   toast(REDACT?"Redaction ON — names & selectors masked (PDF/PNG exports too)":"Redaction off"); };
 
 /* ---------- annotations (notes on the graph) ---------- */
 let noteSeq=0;
-$("noteBtn").onclick=()=>{
+/* addNote(anchorId) — with an anchor, the note is tied to that node by a short leash
+   edge and follows it around; without, it's a free-floating note at the view center. */
+function addNote(anchorId){
   if(!network){toast("Load a graph first");return;}
-  const text=prompt("Note text (shown on the graph):"); if(!text||!text.trim())return;
+  const text=prompt(anchorId?"Note text (anchored to this node):":"Note text (shown on the graph):"); if(!text||!text.trim())return;
+  pushUndo("add note");
   let id; do{ id="note_"+(++noteSeq); }while(DATA.annotations.some(a=>a.id===id));
-  const c=network.getViewPosition();
-  const a={id,text:text.trim(),x:c.x,y:c.y};
+  let x,y;
+  if(anchorId&&nodes.get(anchorId)){ const p=network.getPositions([anchorId])[anchorId]||network.getViewPosition(); x=p.x+40; y=p.y-50; }
+  else { anchorId=null; const c=network.getViewPosition(); x=c.x; y=c.y; }
+  const a={id,text:text.trim(),x,y}; if(anchorId)a.anchor=anchorId;
   DATA.annotations.push(a);
-  nodes.add({id,label:a.text,shape:"text",_note:true,physics:false,x:a.x,y:a.y,
+  nodes.add({id,label:a.text,shape:"text",_note:true,physics:!!anchorId,x,y,
     font:{size:20,color:GT.font,strokeWidth:5,strokeColor:GT.fontStroke,bold:true}});
-  toast("Note added — drag to position, double-click to delete");
+  if(anchorId)edges.add({id:"na_"+id,from:id,to:anchorId,_kind:"note",length:70,dashes:[2,4],width:1,
+    color:{color:GT.edgeWeak,highlight:GT.edgeWeak,opacity:0.55},arrows:{to:{enabled:false}},smooth:false,label:""});
+  toast(anchorId?"Note anchored to node — it follows the node; double-click the note to delete":"Note added — drag to position, double-click to delete");
+}
+$("noteBtn").onclick=()=>{
+  // exactly one node selected → anchor the note to it
+  const sel=selectedEntityIds();
+  addNote(sel.length===1?sel[0]:null);
 };
 
 /* ---------- PNG export ---------- */
@@ -1621,6 +2047,7 @@ function bmMeta(b){
   if(b.active&&Object.keys(CLUSTERS).length&&b.active.length<Object.keys(CLUSTERS).length)bits.push(b.active.length+"/"+Object.keys(CLUSTERS).length+" clusters");
   if(b.tags&&b.tags.length)bits.push("tags: "+b.tags.join(","));
   if(b.flow&&(b.flow.min||b.flow.from||b.flow.to))bits.push("flow filter");
+  if(b.conn)bits.push("≥"+b.conn+" links");
   if(b.selMode)bits.push("selectors");
   if(b.trace)bits.push("trace");
   if(b.lens)bits.push("lens");
@@ -1642,6 +2069,7 @@ function captureBookmark(caption){
     active:[...active], tags:[...activeTags], selT:[...selTypesOn],
     selMode:selMode, selFocus:selFocus||null,
     flow:{min:$("flowMin").value||"",from:$("flowFrom").value||"",to:$("flowTo").value||""},
+    conn:$("connMin").value||"",
     trace: traceOn&&traceStart?{id:traceStart,dir:traceDir}:null,
     lens: lensOn?{depth:$("lensDepth").value,center:(network.getSelectedNodes()[0]||null)}:null };
 }
@@ -1670,6 +2098,7 @@ function applyBookmark(b,animate){
     const f=b.flow||{}; $("flowMin").value=f.min||""; $("flowFrom").value=f.from||""; $("flowTo").value=f.to||"";
     const mv=parseFloat(String(f.min||"").replace(/[^0-9.]/g,"")); flowMin=isFinite(mv)&&mv>0?mv:null;
     flowFrom=parseDate(f.from); flowTo=parseDate(f.to); if(flowTo!=null)flowTo+=86399999;
+    $("connMin").value=b.conn||""; const cv=parseInt(b.conn||"",10); connMin=isFinite(cv)&&cv>0?cv:0;
     syncFilterUI(); applyFilters(); renderShared(); renderTags();
     // 3) highlights — clear both, then restore whichever was saved
     clearTrace();
@@ -1721,17 +2150,21 @@ function setEdgeLabelLOD(show){ if(!edges||show===edgeLabelsOn)return; edgeLabel
 function clusterVisible(id){const n=nodes.get(id);return n&&active.has(n._cl);}
 const activeTags=new Set();
 let flowMin=null, flowFrom=null, flowTo=null;   // money-flow filters
+let connMin=0;                                   // min-connections filter (0 = off)
 const nodeTags={};                               // id -> tags[] (filled in build)
 function applyFilters(){
   // BATCHED: one update() per DataSet — per-item updates cost O(30s) at 1k nodes.
   const visSet=new Set(), nu=[];
   nodes.forEach(n=>{
     if(n._note){ nu.push({id:n.id,hidden:false}); return; }   // annotations ignore filters
-    let vis_=active.has(n._cl);
+    if(n._bucket){ visSet.add(n.id); nu.push({id:n.id,hidden:false}); return; }   // buckets ignore filters
+    let vis_=(n._cls||[n._cl]).some(k=>active.has(k));        // visible if ANY cluster membership is active
     if(vis_&&activeTags.size){ const tg=nodeTags[n.id]||[]; vis_=tg.some(t=>activeTags.has(t)); }
+    if(vis_&&connMin>0) vis_=(degree[n.id]||0)>=connMin;
     if(vis_)visSet.add(n.id); nu.push({id:n.id,hidden:!vis_}); });
   const eu=[];
   edges.forEach(e=>{const bothVis=visSet.has(e.from)&&visSet.has(e.to);
+    if(e._kind==="note"){ eu.push({id:e.id,hidden:!visSet.has(e.to)}); return; }  // note leash follows its node
     if(e._kind==="rel"){
       let show=bothVis;
       if(show&&flowMin!=null) show=(e._amt||0)>=flowMin;
@@ -1759,41 +2192,71 @@ function updateStats(){
 /* ---------- detail panel ---------- */
 const detail=()=>$("detail"), detailBody=()=>$("detailBody");
 $("detailClose").onclick=()=>detail().style.display="none";
+/* render a capped name list: first 3 + a "+N more" toggle that expands in place */
+function moreList(names,cap){ cap=cap||3;
+  if(names.length<=cap)return esc(names.join(", "));
+  const head=esc(names.slice(0,cap).join(", "));
+  const rest=esc(names.slice(cap).join(", "));
+  return head+` <span class="more-toggle" data-rest="${rest}">+${names.length-cap} more</span>`;
+}
+function bindMoreToggles(root){ root.querySelectorAll(".more-toggle[data-rest]").forEach(el=>el.onclick=e=>{
+  e.stopPropagation(); el.replaceWith(document.createTextNode(", "+el.dataset.rest)); }); }
 function showDetail(id){
+  if(String(id).indexOf("bucket:")===0)return showBucketDetail(id);
   const n=nodes.get(id);if(!n)return;const cl=CLUSTERS[n._cl]||{name:n._cl,color:"#888"};
-  let conns=[];edges.forEach(e=>{if(e._kind!=="rel")return;
-    if(e.from===id){const o=nodes.get(e.to);if(o)conns.push({id:o.id,label:(o._raw||o.label),rel:"→ "+(e._lbl!==undefined?e._lbl:e.label)});}
-    if(e.to===id){const o=nodes.get(e.from);if(o)conns.push({id:o.id,label:(o._raw||o.label),rel:"← "+(e._lbl!==undefined?e._lbl:e.label)});}});
+  const d=DATA.nodes.find(x=>x.id===id)||{};
+  // relationships grouped by direction, deduped per counterpart
+  const out={},inn={};
+  edges.forEach(e=>{if(e._kind!=="rel")return;
+    if(e.from===id){const o=nodes.get(e.to);if(o)(out[o.id]=out[o.id]||{id:o.id,label:(o._raw||o.label),rels:[]}).rels.push(e._lbl!==undefined?e._lbl:e.label);}
+    if(e.to===id){const o=nodes.get(e.from);if(o)(inn[o.id]=inn[o.id]||{id:o.id,label:(o._raw||o.label),rels:[]}).rels.push(e._lbl!==undefined?e._lbl:e.label);}});
+  const outL=Object.values(out),innL=Object.values(inn),total=outL.length+innL.length;
+  const connRow=(c,arrow)=>`<div class="conn" data-id="${esc(c.id)}"><b>${esc(disp(c.label,(nodes.get(c.id)||{})._type))}</b><br>
+      <span class="rel" title="${esc(c.rels.filter(Boolean).join(" · "))}">${arrow} ${esc(c.rels.filter(Boolean).slice(0,2).join(" · ")||"link")}${c.rels.length>2?" +"+(c.rels.length-2):""}</span></div>`;
+  const CONN_CAP=8;
+  const grp=(list,title,arrow)=>{ if(!list.length)return"";
+    const rows=list.map(c=>connRow(c,arrow));
+    const head=rows.slice(0,CONN_CAP).join(""), rest=rows.slice(CONN_CAP);
+    return `<div class="conngrp">${title} <span class="cnt">${list.length}</span></div>`+head+
+      (rest.length?`<div class="conn-rest" style="display:none">${rest.join("")}</div>
+       <div class="more-toggle conn-more" style="margin:2px 0 4px">show ${rest.length} more…</div>`:"");
+  };
+  // selectors — shared "also:" lists capped with expandable +N more
   const sel=SEL[id]||{};let selHtml="";SELKEYS.forEach(type=>{(sel[type]||[]).forEach(v=>{
     const key=type+"|"+norm(type,v);const sh=index[key]&&index[key].ids.size>=2;
-    const others=sh?[...index[key].ids].filter(x=>x!==id).map(x=>{const o=nodes.get(x);return o?disp(o._raw||o.label,o._type):x;}):[];
+    const others=sh?[...index[key].ids].filter(x=>x!==id).map(x=>{const o=nodes.get(x);if(o)return disp(o._raw||o.label,o._type);const od=DATA.nodes.find(nn=>nn.id===x);return od?disp(od.label,od.type):x;}):[];
     selHtml+=`<div class="selrow ${sh?'shared':''}" ${sh?`data-key="${esc(key)}"`:''}>
       <span class="tag" style="background:${SELTYPES[type].raw}"></span>
       <div><span>${esc(dispSel(v,type))}</span>${sh?`<span class="badge">shared ×${index[key].ids.size}</span>`:''}
-      ${sh?`<div class="m" style="color:var(--muted);font-size:11px;margin-top:2px">also: ${esc(others.join(", "))}</div>`:''}</div></div>`;});});
+      ${sh?`<div class="m" style="color:var(--muted);font-size:11px;margin-top:2px">also: ${moreList(others)}</div>`:''}</div></div>`;});});
   const tags=nodeTags[id]||[];
   const flows=flowFor(id);
-  detailBody().innerHTML=`<span class="close" id="dc2">×</span>
-    <h3>${esc(disp(n._raw||n.label,n._type))}</h3><div class="role">${esc(n._role||"")}</div>
+  detailBody().innerHTML=`<h3>${esc(disp(n._raw||n.label,n._type))}</h3><div class="role">${esc(n._role||"")}</div>
     <span class="clbadge" style="background:${cl.color}">${esc(cl.name)} · ${typeLabel(n._type)}</span>
+    ${(n._cls||[]).length>1?`<div style="margin:2px 0">${(n._cls||[]).slice(1).map(k=>{const c2=CLUSTERS[k];return c2?`<span class="clbadge" style="background:${c2.color};margin:2px 4px 2px 0">${esc(c2.name)}</span>`:"";}).join("")}</div>`:""}
     ${tags.length?`<div style="margin:4px 0 2px">${tags.map(t=>`<span class="tagbadge">${esc(t)}</span>`).join("")}</div>`:""}
     <button class="dossier-open" id="dossierBtn">Open full dossier</button>
     <button class="edit-open" id="editBtn">Edit dossier</button>
-    <div class="btns" style="margin:6px 0">
+    <div class="btns" style="margin:6px 0;flex-wrap:wrap">
       <button id="traceFwd" title="Follow outgoing links downstream">Trace funds →</button>
       <button id="traceBack" title="Follow incoming links upstream">← Trace sources</button>
+      <button id="pinOneBtn" title="Anchor this node in place while physics moves the rest">${d.pinned?"📌 Unpin":"📌 Pin"}</button>
+      <button id="noteOneBtn" title="Attach a note to this node on the graph">+ Note</button>
     </div>
     ${(flows.in||flows.out)?`<div class="hint" style="margin:2px 0 6px">Flow in: <b style="color:var(--ok)">${fmtAmt(flows.in)||"—"}</b> · out: <b style="color:var(--warn)">${fmtAmt(flows.out)||"—"}</b></div>`:""}
     <div class="desc">${esc(n._desc||"—")}</div>
     ${selHtml?`<h4>Contact &amp; selectors</h4>${selHtml}`:""}
-    <h4>Connections (${conns.length})</h4>${
-      conns.map(c=>`<div class="conn" data-id="${esc(c.id)}"><b>${esc(disp(c.label,(nodes.get(c.id)||{})._type))}</b><br><span class="rel">${esc(c.rel)}</span></div>`).join("")||"<div class='hint'>No links in current view.</div>"}`;
+    <h4>Connections (${total})</h4>${
+      (grp(outL,"Outgoing","→")+grp(innL,"Incoming","←"))||"<div class='hint'>No links in current view.</div>"}`;
   detail().style.display="block";
-  $("dc2").onclick=()=>detail().style.display="none";
   detailBody().querySelectorAll(".conn").forEach(el=>el.onclick=()=>{const t=el.dataset.id;network.selectNodes([t]);network.focus(t,{scale:1.1,animation:true});showDetail(t);});
-  detailBody().querySelectorAll(".selrow.shared").forEach(el=>el.onclick=()=>focusSelector(el.dataset.key));
+  detailBody().querySelectorAll(".selrow.shared").forEach(el=>el.onclick=e=>{ if(e.target.classList.contains("more-toggle"))return; focusSelector(el.dataset.key); });
+  bindMoreToggles(detailBody());
+  detailBody().querySelectorAll(".conn-more").forEach(el=>el.onclick=()=>{ const rest=el.previousElementSibling; if(rest)rest.style.display=""; el.remove(); });
   $("traceFwd").onclick=()=>traceFrom(id,true);
   $("traceBack").onclick=()=>traceFrom(id,false);
+  $("pinOneBtn").onclick=()=>{ setPinned([id],!(DATA.nodes.find(x=>x.id===id)||{}).pinned); showDetail(id); };
+  $("noteOneBtn").onclick=()=>addNote(id);
   $("dossierBtn").onclick=()=>openDossier(id);
   $("editBtn").onclick=()=>openEditor(id);}
 function flowFor(id){ let fin=0,fout=0; edges.forEach(e=>{ if(e._kind!=="rel"||!e._amt)return;
@@ -1885,6 +2348,10 @@ function toggleSelMode(force){selMode=(typeof force==="boolean")?force:!selMode;
   const lg=$("selLegend"); if(lg)lg.style.display=selMode?"flex":"none";
   if(!selMode)selFocus=null;applyFilters();renderShared();}
 $("selMode").onclick=()=>toggleSelMode();
+$("undoBtn").onclick=doUndo;
+/* cramped screens: collapse the graph-settings bar so it never covers the detail pane */
+function syncCramped(){ document.body.classList.toggle("cramped",window.innerWidth<1480); }
+window.addEventListener("resize",syncCramped); syncCramped();
 $("fit").onclick=()=>network&&network.fit({animation:true});
 $("physics").onclick=e=>{if(!network)return;phys=!phys;network.setOptions({physics:{enabled:phys}});e.target.textContent=phys?"Pause physics":"Resume physics";};
 $("reset").onclick=()=>{if(!network)return;active.clear();Object.keys(CLUSTERS).forEach(k=>active.add(k));
@@ -1898,8 +2365,8 @@ document.querySelectorAll("#side .box h2").forEach(h=>{ h.addEventListener("clic
 }); });
 
 /* ---------- layout engine ---------- */
-function clearFixed(){nodes.forEach(n=>nodes.update({id:n.id,fixed:false}));}
-function setPositions(pos){nodes.update(Object.entries(pos).map(([id,p])=>({id,x:p.x,y:p.y,fixed:false})));}
+function clearFixed(){nodes.forEach(n=>{ if(n._pinned)return; nodes.update({id:n.id,fixed:false});});}
+function setPositions(pos){nodes.update(Object.entries(pos).filter(([id])=>{const n=nodes.get(id);return !(n&&n._pinned);}).map(([id,p])=>({id,x:p.x,y:p.y,fixed:false})));}
 function syncLayoutBtns(){const s=$("laySel"); if(s)s.value=currentLayout;}
 function syncPhysicsBtn(on){phys=on;const b=$("physics");if(b)b.textContent=on?"Pause physics":"Resume physics";}
 function layoutSpaced(){const pos={},byC={};nodes.forEach(n=>{(byC[n._cl]=byC[n._cl]||[]).push(n.id);});
@@ -2042,7 +2509,9 @@ function importCSV(text,mode){ // mode: "replace" | "merge"
   if(iS<0||iT<0) throw new Error("Couldn't find source and target columns.");
 
   const model = (mode==="merge")
-    ? {config:DATA.config,clusters:DATA.clusters,nodes:DATA.nodes.slice(),edges:DATA.edges.slice()}
+    ? {config:DATA.config,clusters:DATA.clusters,nodes:DATA.nodes.slice(),edges:DATA.edges.slice(),
+       bookmarks:Array.isArray(DATA.bookmarks)?DATA.bookmarks:[],
+       annotations:Array.isArray(DATA.annotations)?DATA.annotations:[]}
     : {config:DATA.config,clusters:(Object.keys(DATA.clusters).length?DATA.clusters:{c1:{name:"Entities",color:"#4363d8"}}),nodes:[],edges:[]};
   const defCluster=Object.keys(model.clusters)[0]||"c1";
   if(!model.clusters[defCluster]) model.clusters[defCluster]={name:"Entities",color:"#4363d8"};
@@ -2073,12 +2542,14 @@ function importCSV(text,mode){ // mode: "replace" | "merge"
     byLabel[key]=n; byId[id]=n; model.nodes.push(n); return n;
   }
   const edgeSeen=new Set(); model.edges.forEach(e=>edgeSeen.add(e.from+"|"+e.to+"|"+(e.label||"")));
+  const touched=new Set(); // every node this upload mentions — gets the auto import tag
   let added=0,skipped=0,selAdded=0;
   dataRows.forEach(r=>{
     // Selector row: target_type names a contact field → attach target VALUE to the source entity.
     const sf = iTT>=0 ? selField(r[iTT]) : null;
     if(sf){
       const s=ensureNode(r[iS], iST>=0?r[iST]:null, iSC>=0?r[iSC]:null);
+      if(s)touched.add(s.id);
       const val=(r[iT]!=null)?String(r[iT]).trim():"";
       if(!s||!val){skipped++;return;}
       s.sel[sf]=s.sel[sf]||[];
@@ -2088,6 +2559,7 @@ function importCSV(text,mode){ // mode: "replace" | "merge"
     // Relationship row: both endpoints are entities → node + edge.
     const s=ensureNode(r[iS], iST>=0?r[iST]:null, iSC>=0?r[iSC]:null);
     const t=ensureNode(r[iT], iTT>=0?r[iTT]:null, iTC>=0?r[iTC]:null);
+    if(s)touched.add(s.id); if(t)touched.add(t.id);
     if(!s||!t){skipped++;return;}
     const label=(iL>=0&&r[iL]!=null)?String(r[iL]).trim():"";
     const k=s.id+"|"+t.id+"|"+label;
@@ -2100,22 +2572,68 @@ function importCSV(text,mode){ // mode: "replace" | "merge"
   { const usedC={}; model.nodes.forEach(n=>usedC[n.cluster]=1); const keys=Object.keys(model.clusters);
     if(keys.length>1) keys.forEach(k=>{ if(!usedC[k]) delete model.clusters[k]; });
     if(!Object.keys(model.clusters).length) model.clusters.c1={name:"Entities",color:"#4363d8"}; }
+  // auto-tag this upload: importN, where N = one past the highest importN tag already present
+  let impMax=model.config.importCount|0;
+  model.nodes.forEach(n=>{ (Array.isArray(n.tags)?n.tags:[]).forEach(t=>{
+    const m=/^import(\d+)$/i.exec(String(t).trim()); if(m)impMax=Math.max(impMax,+m[1]); }); });
+  const impTag="import"+(impMax+1);
+  model.config.importCount=impMax+1;
+  model.nodes.forEach(n=>{ if(!touched.has(n.id))return;
+    n.tags=Array.isArray(n.tags)?n.tags:[];
+    if(!n.tags.some(t=>String(t).trim().toLowerCase()===impTag)) n.tags.push(impTag); });
   DATA=model;
   normalizeData();
-  return {nodes:model.nodes.length,edges:added,selectors:selAdded,skipped};
+  return {nodes:model.nodes.length,edges:added,selectors:selAdded,skipped,tag:impTag};
 }
 
 /* ---------- import screen wiring ---------- */
-const dropzone=$("dropzone"), fileInputHidden=(()=>{const i=document.createElement("input");i.type="file";i.accept=".csv,text/csv,text/plain";i.style.display="none";document.body.appendChild(i);return i;})();
+const dropzone=$("dropzone"), fileInputHidden=(()=>{const i=document.createElement("input");i.type="file";i.accept=".csv,.html,.htm,text/csv,text/plain,text/html";i.style.display="none";document.body.appendChild(i);return i;})();
+/* ---------- import from another CaseWeaver dashboard (any older version) ----------
+   Every CaseWeaver file — back to the first release — embeds its case in a
+   <script id="case-data"> JSON block. Extract it, normalise missing fields, and
+   either load it (empty case) or merge it into the current one. */
+function extractDashboardJSON(html){
+  const m=/<script id="case-data"[^>]*>([\s\S]*?)<\/script>/.exec(html);
+  if(!m)throw new Error("No CaseWeaver case data found in that HTML file.");
+  let d; try{ d=JSON.parse(m[1].trim()); }catch(e){ throw new Error("The case data in that file is corrupted."); }
+  if(!d||typeof d!=="object"||!Array.isArray(d.nodes))throw new Error("That file doesn't contain a readable CaseWeaver case.");
+  return d;
+}
+function importDashboard(html){
+  const inc=extractDashboardJSON(html);
+  const existing=DATA.nodes.length>0;
+  const mode=existing?(confirm("Merge the imported case into the current one?\n\nOK = merge (adds its entities, links & clusters)\nCancel = replace everything with the imported case")?"merge":"replace"):"replace";
+  pushUndo("import dashboard");
+  if(!existing||mode==="replace"){ DATA=inc; normalizeData(); }
+  else{
+    // merge clusters (by key; renamed on collision), nodes (by id), edges (deduped)
+    Object.entries(inc.clusters||{}).forEach(([k,v])=>{ if(!DATA.clusters[k])DATA.clusters[k]=v;
+      else if(DATA.clusters[k].name!==v.name){ let nk=k+"_imp"; while(DATA.clusters[nk])nk+="_"; DATA.clusters[nk]=v;
+        (inc.nodes||[]).forEach(n=>{ if(n.cluster===k)n.cluster=nk; if(Array.isArray(n.clusters))n.clusters=n.clusters.map(c=>c===k?nk:c); }); } });
+    const have=new Set(DATA.nodes.map(n=>n.id)); let addN=0;
+    (inc.nodes||[]).forEach(n=>{ if(!have.has(n.id)){ DATA.nodes.push(n); have.add(n.id); addN++; } });
+    const ekey=e=>e.from+"|"+e.to+"|"+(e.label||""); const haveE=new Set(DATA.edges.map(ekey)); let addE=0;
+    (inc.edges||[]).forEach(e=>{ if(have.has(e.from)&&have.has(e.to)&&!haveE.has(ekey(e))){ DATA.edges.push(e); haveE.add(ekey(e)); addE++; } });
+    (inc.annotations||[]).forEach(a=>{ if(!DATA.annotations.some(x=>x.id===a.id))DATA.annotations.push(a); });
+    normalizeData();
+    toast(`Merged ${addN} entities and ${addE} links from the imported dashboard`);
+  }
+  showGraphMode(); build();
+  if(!existing||mode==="replace")toast("Dashboard imported — "+DATA.nodes.length+" entities, "+DATA.edges.length+" links");
+}
+function looksLikeHTML(name,text){ return /\.html?$/i.test(name||"")||/^\s*(<!doctype|<html)/i.test(text||""); }
 function handleFile(file){
   $("importErr").textContent="";
   const reader=new FileReader();
   reader.onload=()=>{ try{
+      const text=String(reader.result);
+      if(looksLikeHTML(file.name,text)){ importDashboard(text); return; }
       const existing=DATA.nodes.length>0;
-      const res=importCSV(String(reader.result), existing?"merge":"replace");
+      pushUndo("import CSV");
+      const res=importCSV(text, existing?"merge":"replace");
       showGraphMode(); build();
-      toast(`Imported ${res.edges} relationships across ${res.nodes} entities`+(res.selectors?` · ${res.selectors} selectors`:``)+(res.skipped?` · ${res.skipped} rows skipped`:""));
-    }catch(err){ $("importErr").textContent=""+err.message; }
+      toast(`Imported ${res.edges} relationships across ${res.nodes} entities`+(res.selectors?` · ${res.selectors} selectors`:``)+(res.skipped?` · ${res.skipped} rows skipped`:"")+` · tagged ${res.tag}`);
+    }catch(err){ $("importErr").textContent=""+err.message; toast(""+err.message); }
   };
   reader.onerror=()=>{$("importErr").textContent="Could not read that file.";};
   reader.readAsText(file);
@@ -2194,7 +2712,7 @@ $("sampleLink").onclick=()=>downloadText("sample-edge-list.csv",SAMPLE_CSV,"text
   if(lb)lb.addEventListener("click",()=>setTimeout(sync,0));
   sync(); })();
 (function(){ const b=document.getElementById("loadSampleBtn");
-  if(b)b.onclick=()=>{ try{ importCSV(SAMPLE_CSV,"replace"); showGraphMode(); build(); toast("Sample case loaded — click any node to explore"); }catch(e){ document.getElementById("importErr").textContent=String(e.message||e); } };
+  if(b)b.onclick=()=>{ try{ pushUndo("load sample"); importCSV(SAMPLE_CSV,"replace"); showGraphMode(); build(); toast("Sample case loaded — click any node to explore"); }catch(e){ document.getElementById("importErr").textContent=String(e.message||e); } };
   const s=document.getElementById("blankStartBtn");
   if(s)s.onclick=()=>{ showGraphMode(); build(); openEditor(null); };
 })();
@@ -2243,9 +2761,14 @@ function openEditor(id){
       <div class="fld"><label>Type</label><select id="e_type">${Object.entries(NTYPES).map(([k,v])=>`<option value="${k}" ${ (NTYPES[n.type]?n.type:"C")===k?"selected":""}>${esc(v.label)}</option>`).join("")}</select></div>
     </div>
     <div class="grid2">
-      <div class="fld"><label>Cluster</label><select id="e_cluster">${clusterOptions(n.cluster)}</select></div>
+      <div class="fld"><label>Cluster (primary — sets the colour)</label><select id="e_cluster">${clusterOptions(n.cluster)}</select></div>
       <div class="fld"><label>Role / title</label><input type="text" id="e_role" value="${esc(n.role||"")}" placeholder="e.g. 95% owner / director"/></div>
     </div>
+    <div class="fld"><label>Also in clusters <span style="color:var(--muted);text-transform:none;letter-spacing:0">— a node can belong to several; extra memberships never replace the primary</span></label>
+      <div id="e_clusters" style="display:flex;flex-wrap:wrap;gap:4px 14px;padding:4px 0">${
+        Object.entries(DATA.clusters).map(([k,v])=>`<label style="display:inline-flex;align-items:center;gap:5px;font-size:12.5px;cursor:pointer">
+          <input type="checkbox" class="e_cl_extra" value="${esc(k)}" ${((n.clusters||[]).includes(k))?"checked":""}/>
+          <span class="dot" style="width:9px;height:9px;border-radius:50%;display:inline-block;background:${v.color}"></span>${esc(v.name)}</label>`).join("")}</div></div>
     <div class="fld"><label>Tags — comma-separated (used for filtering)</label>
       <input type="text" id="e_tags" value="${esc((n.tags||[]).join(", "))}" placeholder="e.g. mule, SAR-filed, subject, victim" list="tagSuggest"/>
       <datalist id="tagSuggest">${Object.keys(allTags()).map(t=>`<option value="${esc(t)}">`).join("")}</datalist>
@@ -2395,14 +2918,16 @@ $("editCancel").onclick=closeEditor;
 $("editOverlay").addEventListener("click",e=>{if(e.target===$("editOverlay"))closeEditor();});
 $("editDelete").onclick=()=>{
   if(!editId)return;
+  pushUndo("delete entity");
   DATA.nodes=DATA.nodes.filter(n=>n.id!==editId);
   DATA.edges=DATA.edges.filter(e=>e.from!==editId&&e.to!==editId);
-  closeEditor(); build(); toast("Entity deleted");
+  closeEditor(); build(true); toast("Entity deleted (Ctrl/Cmd-Z to undo)");
 };
 function splitLines(t){ return String(t).split("\n").map(s=>s.trim()).filter(Boolean); }
 $("editSave").onclick=()=>{
   const label=$("e_label").value.trim();
   if(!label){ $("e_label").focus(); $("e_label").style.borderColor="var(--warn)"; return; }
+  pushUndo(editId?"edit entity":"add entity");
   const isNew=!editId;
   let node;
   if(isNew){
@@ -2418,6 +2943,7 @@ $("editSave").onclick=()=>{
   node.photo=($("e_photo")||{}).value||"";
   node.tags=(($("e_tags")||{}).value||"").split(",").map(t=>t.trim()).filter(Boolean);
   node.cluster=$("e_cluster").value in DATA.clusters ? $("e_cluster").value : Object.keys(DATA.clusters)[0];
+  node.clusters=[...document.querySelectorAll("#editBody .e_cl_extra:checked")].map(c=>c.value).filter(k=>k!==node.cluster&&DATA.clusters[k]);
   node.role=$("e_role").value.trim();
   node.sig=$("e_sig").value.trim();
   node.desc=$("e_desc").value.trim();
@@ -2436,7 +2962,7 @@ $("editSave").onclick=()=>{
     if(dir==="out")DATA.edges.push({from:editId,to:other,label:lbl,weak,amount,date});
     else DATA.edges.push({from:other,to:editId,label:lbl,weak,amount,date});
   });
-  closeEditor(); build();
+  closeEditor(); build(true);   // preserve=true → the graph arrangement is untouched by the edit
   // reopen detail for continuity
   if(nodes.get(node.id)) showDetail(node.id);
   toast("Saved to working copy — click Save to write it into the file");
@@ -2470,7 +2996,26 @@ function openSettings(){
     </div>
     <div class="fld"><label>Subtitle</label><input type="text" id="s_subtitle" value="${esc(c.subtitle||"")}"/></div>
     <div class="fld"><label>Source note (footer of each dossier)</label><input type="text" id="s_sourceNote" value="${esc(c.sourceNote||"")}"/></div>
-    <div class="fld" style="max-width:140px"><label>Currency symbol</label><input type="text" id="s_currency" value="${esc(c.currency||"$")}"/></div>
+    <div class="fld" style="max-width:220px"><label>Amount unit ($, €, B, pkts — blank for plain numbers)</label><input type="text" id="s_currency" value="${esc(typeof c.currency==="string"?c.currency:"$")}"/></div>
+    <h4>Auto-save</h4>
+    <div class="hint" style="margin:0 0 6px">Auto-save is toggled from the top bar (next to <b>Save case</b>) and is <b>off by default</b>. It saves on a timer — never after every interaction — so it can't bog the graph down.</div>
+    <div class="rowc" style="align-items:center;gap:10px">
+      <label class="hint" style="min-width:90px">Save every</label>
+      <select id="s_asMode" style="max-width:160px">
+        <option value="min" ${c.autosave.interval<3600000?"selected":""}>1–5 minutes</option>
+        <option value="hour" ${c.autosave.interval===3600000?"selected":""}>1 hour</option>
+        <option value="day" ${c.autosave.interval===86400000?"selected":""}>1 day</option>
+      </select>
+      <input type="range" id="s_asMin" min="1" max="5" step="1" value="${Math.min(5,Math.max(1,Math.round(c.autosave.interval/60000)))}" style="flex:1;${c.autosave.interval>=3600000?"display:none":""}"/>
+      <span id="s_asMinLbl" class="hint" style="min-width:46px;${c.autosave.interval>=3600000?"display:none":""}">${Math.min(5,Math.max(1,Math.round(c.autosave.interval/60000)))} min</span>
+    </div>
+    <h4>Graph spacing</h4>
+    <div class="rowc" style="align-items:center;gap:10px">
+      <label class="hint" style="min-width:90px">Node spacing</label>
+      <input type="range" id="s_spacing" min="0.5" max="3" step="0.1" value="${c.spacing}" style="flex:1"/>
+      <span id="s_spacingLbl" class="hint" style="min-width:36px">${c.spacing}×</span>
+    </div>
+    <div class="hint" style="margin-top:4px">Multiplies the resting edge length &amp; repulsion in the force layout — raise it if nodes overlap. Applies on the next physics run.</div>
     <h4>Branding</h4>
     <label class="togglerow"><input type="checkbox" id="s_hideBrand" ${c.hideBrand?"checked":""}/>
       <span><b>Hide ${esc(BRAND.name)} branding.</b> Removes the logo from the header and the credit line from PDF reports — for client- and executive-facing copies. (Present mode always hides branding automatically.)</span></label>
@@ -2483,6 +3028,10 @@ function openSettings(){
     if(Object.keys(DATA.clusters).length<=1){toast("Keep at least one cluster");return;}
     btn.closest(".clmgr-row").remove();
   });
+  $("s_asMode").onchange=()=>{ const m=$("s_asMode").value==="min";
+    $("s_asMin").style.display=m?"":"none"; $("s_asMinLbl").style.display=m?"":"none"; };
+  $("s_asMin").oninput=()=>{ $("s_asMinLbl").textContent=$("s_asMin").value+" min"; };
+  $("s_spacing").oninput=()=>{ $("s_spacingLbl").textContent=$("s_spacing").value+"×"; };
   $("addClusterBtn2").onclick=()=>{
     const used=[...$("clmgr").querySelectorAll(".cl-color")].map(i=>i.value);
     const color=PALETTE.find(c=>!used.includes(c))||PALETTE[$("clmgr").children.length%PALETTE.length];
@@ -2500,20 +3049,26 @@ $("settingsClose").onclick=closeSettings;
 $("settingsCancel").onclick=closeSettings;
 $("settingsOverlay").addEventListener("click",e=>{if(e.target===$("settingsOverlay"))closeSettings();});
 $("settingsSave").onclick=()=>{
+  pushUndo("settings change");
   DATA.config.caseId=$("s_caseId").value.trim()||"CASE-XXX";
   DATA.config.caseTitle=$("s_caseTitle").value.trim()||"Investigation";
   DATA.config.subtitle=$("s_subtitle").value.trim();
   DATA.config.sourceNote=$("s_sourceNote").value.trim();
-  DATA.config.currency=$("s_currency").value.trim()||"$";
+  DATA.config.currency=$("s_currency").value.trim();
   DATA.config.hideBrand=!!($("s_hideBrand")&&$("s_hideBrand").checked);
+  // auto-save interval (1–5 min slider · 1 hour · 1 day)
+  const asMode=$("s_asMode").value;
+  DATA.config.autosave.interval=asMode==="hour"?3600000:asMode==="day"?86400000:Math.min(5,Math.max(1,parseInt($("s_asMin").value,10)||5))*60000;
+  // graph spacing multiplier
+  const spv=parseFloat($("s_spacing").value); if(isFinite(spv)&&spv>=0.5&&spv<=3)DATA.config.spacing=spv;
   applyBrandVisibility();
   const newCl={}; const rows=[...$("clmgr").querySelectorAll(".clmgr-row")];
   rows.forEach(r=>{ const k=r.dataset.k; newCl[k]={name:r.querySelector(".cl-name").value.trim()||"Cluster",color:r.querySelector(".cl-color").value}; });
   if(!Object.keys(newCl).length)newCl.c1={name:"Entities",color:"#4363d8"};
   const fallback=Object.keys(newCl)[0];
-  DATA.nodes.forEach(n=>{ if(!newCl[n.cluster])n.cluster=fallback; });
+  DATA.nodes.forEach(n=>{ if(!newCl[n.cluster])n.cluster=fallback; n.clusters=(n.clusters||[]).filter(k=>newCl[k]&&k!==n.cluster); });
   DATA.clusters=newCl;
-  closeSettings(); build(); toast("Settings applied");
+  closeSettings(); build(true); syncAutoSaveTimer(); toast("Settings applied");
 };
 
 /* ============================ SAVE BACK TO FILE ============================ */
@@ -2536,24 +3091,102 @@ function downloadText(name,text,mime){
   setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},400);
 }
 let fileHandle=null;
-async function saveFile(){
+/* The chosen file handle is remembered in IndexedDB so "Save case" keeps writing
+   into the SAME file across saves AND across page reloads — the picker only
+   appears on the very first save (or if the remembered file went away). */
+const FH_DB="cw-filehandle", FH_STORE="handles";
+function fhDB(){ return new Promise((res,rej)=>{ try{ const q=indexedDB.open(FH_DB,1);
+  q.onupgradeneeded=()=>q.result.createObjectStore(FH_STORE);
+  q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); }catch(e){ rej(e); } }); }
+async function fhRemember(h){ try{ const db=await fhDB(); await new Promise((res,rej)=>{
+  const tx=db.transaction(FH_STORE,"readwrite"); tx.objectStore(FH_STORE).put(h,"file");
+  tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){} }
+async function fhRecall(){ try{ const db=await fhDB(); return await new Promise((res,rej)=>{
+  const q=db.transaction(FH_STORE,"readonly").objectStore(FH_STORE).get("file");
+  q.onsuccess=()=>res(q.result||null); q.onerror=()=>rej(q.error); }); }catch(e){ return null; } }
+async function fhPermission(h){ try{
+  if(h.queryPermission&&await h.queryPermission({mode:"readwrite"})==="granted")return true;
+  return h.requestPermission?(await h.requestPermission({mode:"readwrite"}))==="granted":true;
+}catch(e){ return false; } }
+fhRecall().then(h=>{ if(h&&!fileHandle)fileHandle=h; });
+function storeSnapshot(){
+  try{ localStorage.setItem(cwStoreKey(), serializeDataJSON()); return true; }
+  catch(e){ return false; } /* quota exceeded (large photos) or storage disabled */
+}
+async function saveFile(ev){
+  DATA.config.savedAt=Date.now(); // lets a reopened file tell which copy is newer
   let html;
   try{ html=buildFileHTML(); }catch(err){ toast(""+err.message); return; }
   // Preferred: File System Access API — writes straight back into a chosen file.
   if(window.showSaveFilePicker){
+    // 1) Reuse the remembered handle — no picker, no new file.
+    if(fileHandle){
+      try{
+        if(await fhPermission(fileHandle)){
+          const w=await fileHandle.createWritable(); await w.write(html); await w.close();
+          toast("Saved into "+(fileHandle.name||"file")+" ✓"); return;
+        }
+      }catch(err){ /* handle went stale (file moved/renamed/deleted) — re-pick below */ }
+      fileHandle=null;
+    }
+    // 2) First save (or stale handle): show the picker once, then remember the choice.
     try{
-      if(!fileHandle){
-        fileHandle=await window.showSaveFilePicker({suggestedName:suggestedName(),
-          types:[{description:"HTML dashboard",accept:{"text/html":[".html"]}}]});
-      }
+      fileHandle=await window.showSaveFilePicker({suggestedName:suggestedName(),
+        types:[{description:"HTML dashboard",accept:{"text/html":[".html"]}}]});
       const w=await fileHandle.createWritable(); await w.write(html); await w.close();
-      toast("Saved into "+(fileHandle.name||"file")+" ✓"); return;
-    }catch(err){ if(err&&err.name==="AbortError")return; /* fall through to download */ }
+      fhRemember(fileHandle);
+      toast("Saved into "+(fileHandle.name||"file")+" ✓ — future saves will reuse this file"); return;
+    }catch(err){ if(err&&err.name==="AbortError")return; fileHandle=null; /* fall through to download */ }
+  }
+  /* Safari / Firefox: no File System Access API, so a local file can't be
+     overwritten in place. Save into browser storage instead — reopening this
+     same file restores the edits automatically. Shift+click Save to download
+     a portable updated copy (e.g. to move or share the file). */
+  const forceDownload=!!(ev&&ev.shiftKey);
+  if(!forceDownload&&storeSnapshot()){
+    toast("Saved in this browser ✓ — reopening this file restores your edits (Shift+Save for a portable copy)");
+    return;
   }
   downloadText(suggestedName(),html,"text/html");
-  toast("Downloaded updated file — replace your working copy with it");
+  toast(forceDownload?"Downloaded portable copy ✓":"Browser storage unavailable/full — downloaded updated file instead; replace your working copy with it");
 }
-$("saveBtn").onclick=saveFile;
+$("saveBtn").onclick=e=>{ saveFile(e); DIRTY=false; };
+
+/* ============================ AUTO-SAVE ============================
+   Timer-based only — a save fires every N minutes/hours/days (Settings), and only
+   when something actually changed. It deliberately does NOT save on every
+   interaction: rewriting a 1MB+ file per click would bog the graph down.
+   OFF by default; the toggle lives in the top bar next to Save case. */
+let autoSaveTimer=null;
+async function autoSaveTick(){
+  if(!DATA.config.autosave.on||!DIRTY)return;
+  DATA.config.savedAt=Date.now();
+  let ok=false,how="";
+  // silent path 1: rewrite the remembered file (no picker — permission must already be granted)
+  if(fileHandle){
+    try{ if(fileHandle.queryPermission&&(await fileHandle.queryPermission({mode:"readwrite"}))==="granted"){
+      const w=await fileHandle.createWritable(); await w.write(buildFileHTML()); await w.close(); ok=true; how="file"; } }catch(e){}
+  }
+  // silent path 2: browser-storage snapshot (no dialogs, survives reopening the same file)
+  if(!ok&&storeSnapshot()){ ok=true; how="browser"; }
+  if(ok){ DIRTY=false; toast("Auto-saved ("+(how==="file"?("into "+(fileHandle.name||"file")):"browser snapshot")+") ✓"); }
+}
+function syncAutoSaveTimer(){
+  if(autoSaveTimer){ clearInterval(autoSaveTimer); autoSaveTimer=null; }
+  const cfg=DATA.config.autosave, b=$("autoSaveBtn");
+  if(b){ b.classList.toggle("on",cfg.on);
+    const iv=cfg.interval;
+    const ivTxt=iv>=86400000?"1 d":iv>=3600000?"1 h":Math.round(iv/60000)+" min";
+    b.innerHTML='<span class="as-dot"></span>Auto-save: '+(cfg.on?"on · "+ivTxt:"off"); }
+  if(cfg.on)autoSaveTimer=setInterval(autoSaveTick,Math.max(60000,cfg.interval));
+}
+$("autoSaveBtn").onclick=()=>{
+  DATA.config.autosave.on=!DATA.config.autosave.on;
+  syncAutoSaveTimer(); markDirty();
+  toast(DATA.config.autosave.on
+    ?"Auto-save ON — saves every "+(DATA.config.autosave.interval>=86400000?"day":DATA.config.autosave.interval>=3600000?"hour":Math.round(DATA.config.autosave.interval/60000)+" min")+" when there are changes (interval in Settings)"
+    :"Auto-save off");
+};
 
 /* ============================ PDF REPORT ============================ */
 // high-resolution PNG of the current graph (visible nodes, current positions), on the theme background
@@ -2704,6 +3337,33 @@ async function generateReport(){
       doc.setDrawColor(LINE); doc.setLineWidth(0.5); doc.rect(x,y,w,h);
     } else { wrapped("(graph image unavailable)",11,MUT); }
 
+    // ---- STORYBOARD (one bookmarked scene per page) ----
+    if((DATA.bookmarks||[]).length&&network){
+      const restoreScene=captureBookmark("");   // snapshot the live view so we can put it back
+      for(let bi=0;bi<DATA.bookmarks.length;bi++){
+        const b=DATA.bookmarks[bi];
+        newPage();
+        doc.setFont("helvetica","bold"); doc.setFontSize(20); setC(INK);
+        doc.text("Storyboard — scene "+(bi+1)+" of "+DATA.bookmarks.length, M, y); y+=24;
+        if(b.caption){ doc.setFont("helvetica","bold"); doc.setFontSize(12.5); setC(ACC);
+          doc.splitTextToSize(b.caption,PW-2*M).forEach(ln=>{ doc.text(ln, M, y); y+=16; }); y+=2; }
+        doc.setFont("helvetica","normal"); doc.setFontSize(9); setC(MUT);
+        doc.text("Scene state: "+bmMeta(b), M, y); y+=16;
+        let bImg=null;
+        try{
+          applyBookmark(b,false);                       // apply layout + filters + highlights
+          await new Promise(r=>setTimeout(r,80));       // let the DataSets settle
+          bImg=await graphImageDataURL(1800);
+        }catch(e){}
+        if(bImg){ const bp=doc.getImageProperties(bImg); const availW=PW-2*M, availH=PH-y-58;
+          let w=availW, h=w*bp.height/bp.width; if(h>availH){ h=availH; w=h*bp.width/bp.height; }
+          const x=M+(availW-w)/2; doc.addImage(bImg,"PNG",x,y,w,h,undefined,"FAST");
+          doc.setDrawColor(LINE); doc.setLineWidth(0.5); doc.rect(x,y,w,h);
+        } else { wrapped("(scene image unavailable)",11,MUT); }
+      }
+      try{ applyBookmark(restoreScene,false); }catch(e){}   // restore the user's live view
+    }
+
     // ---- DOSSIERS (one per page, ordered by links desc) ----
     ordered.forEach(nd=>{
       newPage();
@@ -2832,10 +3492,65 @@ function init(){
   applyBrandVisibility();
   if(DATA.nodes.length){ showGraphMode(); build(); }
   else { showImportMode(); }
+  syncAutoSaveTimer();
 }
 init();
+/* ============================ CSV VIEW ============================ */
+// Canonical type words that importCSV's typeCode() maps back to the same code — keeps downloads round-trippable.
+const CSV_TYPE_WORD={P:"person",C:"company",H:"infrastructure",A:"account",M:"malware",G:"group",L:"location",F:"financial",E:"event",D:"document"};
+function csvQuote(v){ v=String(v==null?"":v); return /[",\n\r]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+function caseCSVRows(){
+  const byId={}; DATA.nodes.forEach(n=>byId[n.id]=n);
+  const clName=k=>(DATA.clusters[k]||{}).name||"";
+  const rows=[];
+  DATA.edges.forEach(e=>{
+    const s=byId[e.from], t=byId[e.to]; if(!s||!t)return;
+    rows.push({kind:"rel", source:s.label, target:t.label, link:e.label||"",
+      source_type:CSV_TYPE_WORD[s.type]||"company", target_type:CSV_TYPE_WORD[t.type]||"company",
+      source_cluster:clName(s.cluster), target_cluster:clName(t.cluster),
+      amount:(e.amount!=null&&isFinite(e.amount))?e.amount:"", date:e.date||""});
+  });
+  DATA.nodes.forEach(n=>{
+    SELKEYS.forEach(k=>{ (n.sel&&n.sel[k]||[]).forEach(v=>{
+      rows.push({kind:"sel", source:n.label, target:v, link:"",
+        source_type:CSV_TYPE_WORD[n.type]||"company", target_type:k,
+        source_cluster:clName(n.cluster), target_cluster:"", amount:"", date:""});
+    });});
+  });
+  return rows;
+}
+function caseCSVText(rows){
+  const head="source,target,link,source_type,target_type,source_cluster,target_cluster,amount,date";
+  return head+"\n"+rows.map(r=>[r.source,r.target,r.link,r.source_type,r.target_type,r.source_cluster,r.target_cluster,r.amount,r.date].map(csvQuote).join(",")).join("\n");
+}
+function renderCsvTable(){
+  const q=String($("csvFilter").value||"").trim().toLowerCase();
+  const all=caseCSVRows();
+  const rows=q? all.filter(r=>[r.source,r.target,r.link,r.source_type,r.target_type,r.source_cluster,r.target_cluster,r.amount,r.date].join(" ").toLowerCase().includes(q)) : all;
+  $("csvCount").textContent=rows.length+" of "+all.length+" rows ("+DATA.nodes.length+" entities, "+DATA.edges.length+" links)";
+  const fmtAmt=a=>a===""?"":Number(a).toLocaleString();
+  $("csvTableWrap").innerHTML=
+    "<table><thead><tr><th></th><th>Source</th><th>Type</th><th>Cluster</th><th>Link / field</th><th>Target</th><th>Type</th><th>Cluster</th><th>Amount</th><th>Date</th></tr></thead><tbody>"+
+    rows.map(r=>"<tr class='"+(r.kind==="sel"?"csv-selrow":"")+"'>"+
+      "<td><span class='csv-kind "+(r.kind==="rel"?"rel":"")+"'>"+(r.kind==="rel"?"LINK":"SEL")+"</span></td>"+
+      "<td>"+esc(r.source)+"</td><td>"+esc(r.source_type)+"</td><td>"+esc(r.source_cluster)+"</td>"+
+      "<td>"+esc(r.kind==="rel"?r.link:("["+r.target_type+"]"))+"</td>"+
+      "<td class='"+(r.kind==="sel"?"mono":"")+"'>"+esc(r.target)+"</td>"+
+      "<td>"+esc(r.kind==="rel"?r.target_type:"")+"</td><td>"+esc(r.target_cluster)+"</td>"+
+      "<td class='num'>"+esc(fmtAmt(r.amount))+"</td><td class='mono'>"+esc(r.date)+"</td></tr>").join("")+
+    "</tbody></table>";
+  return rows;
+}
+function csvSuggestedName(){ return ((DATA.config.caseId||"case").replace(/[^A-Za-z0-9_-]+/g,"_"))+"-edge-list.csv"; }
+$("csvViewBtn").onclick=()=>{ $("csvFilter").value=""; renderCsvTable(); $("csvOverlay").classList.add("on"); };
+$("csvFilter").oninput=()=>renderCsvTable();
+$("csvClose").onclick=$("csvCancel").onclick=()=>$("csvOverlay").classList.remove("on");
+$("csvOverlay").addEventListener("click",e=>{if(e.target===$("csvOverlay"))$("csvOverlay").classList.remove("on");});
+$("csvDownload").onclick=()=>{ const rows=renderCsvTable(); downloadText(csvSuggestedName(),caseCSVText(rows),"text/csv"); toast("Downloaded "+rows.length+" rows"); };
+$("csvCopy").onclick=async()=>{ const rows=renderCsvTable(); try{ await navigator.clipboard.writeText(caseCSVText(rows)); toast("Copied "+rows.length+" rows to clipboard"); }catch(e){ toast("Clipboard blocked — use Download instead"); } };
+
 // expose a few helpers for headless testing
-window._app={importCSV,build,buildFileHTML,DATA:()=>DATA,openEditor,saveDataOnly:serializeDataJSON,applyTheme,generateReport,graphImageDataURL};
+window._app={importCSV,build,buildFileHTML,DATA:()=>DATA,openEditor,saveDataOnly:serializeDataJSON,applyTheme,generateReport,graphImageDataURL,caseCSVText,caseCSVRows};
 </script>
 </body>
 </html>
