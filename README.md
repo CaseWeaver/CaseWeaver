@@ -6,6 +6,12 @@
 <p align="center"><b>The case file that draws itself.</b><br/>
 Self-contained link-analysis dashboard in a single HTML file. No install, no server, no account, no network calls.</p>
 
+<p align="center">
+  <a href="USER_GUIDE.md"><b>📖 User Guide</b></a> ·
+  <a href="CODE_DOCUMENTATION.md"><b>🛠 Code Documentation</b></a> ·
+  <a href="CHANGELOG.md"><b>📋 Changelog</b></a>
+</p>
+
 ---
 
 ## What it is
